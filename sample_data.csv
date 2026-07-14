@@ -1,0 +1,5 @@
+data_type,address,label,value
+Discrete Inputs,0,Run feedback,1
+Discrete Inputs,1,Alarm,0
+Holding Registers,0,Speed setpoint,1500
+Holding Registers,1,Actual speed,1450
