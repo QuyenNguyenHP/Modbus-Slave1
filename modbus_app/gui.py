@@ -14,6 +14,7 @@ from PIL import Image, ImageOps, ImageTk
 from serial.tools import list_ports
 
 from .config import AppConfig
+from .csv_import import format_reference_address, parse_csv, reference_to_offset
 from .server import DataModel, ModbusServerRunner
 
 
@@ -377,17 +378,22 @@ class ModbusSlaveApp(tk.Tk):
             return
 
         rows = table.get_children()
-        expected_last = start + count - 1
+        expected_first = format_reference_address(data_type, start)
+        expected_last = format_reference_address(data_type, start + count - 1)
         layout_matches = (
             len(rows) == count
             and count > 0
-            and str(table.item(rows[0], "values")[0]) == str(start)
+            and str(table.item(rows[0], "values")[0]) == expected_first
             and str(table.item(rows[-1], "values")[0]) == str(expected_last)
         )
         if not layout_matches:
             table.delete(*rows)
             rows = tuple(
-                table.insert("", "end", values=(start + offset, "", ""))
+                table.insert(
+                    "",
+                    "end",
+                    values=(format_reference_address(data_type, start + offset), "", ""),
+                )
                 for offset in range(count)
             )
 
@@ -396,11 +402,12 @@ class ModbusSlaveApp(tk.Tk):
             display = int(bool(value)) if is_bits else int(value)
             label = self.labels.get((data_type, address), "")
             shown_value: str | int = "⬤" if is_bits else display
-            new_values = (address, label, shown_value)
+            reference = format_reference_address(data_type, address)
+            new_values = (reference, label, shown_value)
             if tuple(str(part) for part in table.item(item, "values")) != tuple(str(part) for part in new_values):
                 table.item(item, values=new_values)
             table.item(item, tags=(("bit_on" if display else "bit_off"),) if is_bits else ())
-            if str(address) == str(selected_address):
+            if reference == str(selected_address):
                 table.selection_set(item)
 
     def _handle_table_click(self, event: tk.Event[Any], index: int) -> str | None:
@@ -417,13 +424,14 @@ class ModbusSlaveApp(tk.Tk):
             return "break"
         self._last_bit_toggle = (index, item, now)
 
-        address = int(table.item(item, "values")[0])
         data_type = self.data_types[index].get()
+        reference = table.item(item, "values")[0]
+        address = reference_to_offset(data_type, reference)
         current = bool(self.model.get(data_type, address)[0])
         new_value = int(not current)
         self.model.set(data_type, address, [new_value])
         self.saved_values[(data_type, address)] = new_value
-        self._append_log(f"Set {data_type}[{address}] = {new_value}")
+        self._append_log(f"Set {data_type}[{reference}] = {new_value}")
         self._refresh_data_panel(index)
         return "break"
 
@@ -436,55 +444,39 @@ class ModbusSlaveApp(tk.Tk):
         column = table.identify_column(event.x)
         if not item or column not in {"#2", "#3"}:
             return
-        address, label, current = table.item(item, "values")
+        reference, label, current = table.item(item, "values")
+        address = reference_to_offset(data_type, reference)
         if column == "#2":
             new_label = simpledialog.askstring(
                 "Edit label",
-                f"Label for {data_type}[{address}]:",
+                f"Label for {data_type}[{reference}]:",
                 initialvalue=str(label),
                 parent=self,
             )
             if new_label is not None:
-                self.labels[(data_type, int(address))] = new_label.strip()
-                self._append_log(f"Set label {data_type}[{address}] = {new_label.strip()}")
+                self.labels[(data_type, address)] = new_label.strip()
+                self._append_log(f"Set label {data_type}[{reference}] = {new_label.strip()}")
                 self._refresh_table()
             return
         is_bits = data_type in {"Coils", "Discrete Inputs"}
         if is_bits:
             return
         prompt = "Enter a value from 0 to 65535 (0x... is supported):"
-        value = simpledialog.askstring("Edit value", f"Address {address}\n{prompt}", initialvalue=str(current), parent=self)
+        value = simpledialog.askstring("Edit value", f"Address {reference}\n{prompt}", initialvalue=str(current), parent=self)
         if value is None:
             return
         try:
             parsed = int(value, 0)
             if is_bits and parsed not in {0, 1}:
                 raise ValueError("Bit values must be 0 or 1")
-            self.model.set(data_type, int(address), [parsed])
-            self.saved_values[(data_type, int(address))] = parsed
-            self._append_log(f"Set {data_type}[{address}] = {parsed}")
+            self.model.set(data_type, address, [parsed])
+            self.saved_values[(data_type, address)] = parsed
+            self._append_log(f"Set {data_type}[{reference}] = {parsed}")
             self._refresh_table()
         except ValueError as exc:
             messagebox.showerror("Invalid value", str(exc), parent=self)
 
-    @staticmethod
-    def _parse_csv_int(raw_value: str) -> int:
-        text = raw_value.strip()
-        try:
-            return int(text, 0)
-        except ValueError:
-            return int(text, 10)
-
     def _import_csv(self, index: int) -> None:
-        if not self.model:
-            try:
-                size = int(self.data_size.get())
-                if not 1 <= size <= 65536:
-                    raise ValueError
-                self.model = DataModel(size)
-            except ValueError:
-                messagebox.showerror("Invalid settings", "Data size must be between 1 and 65536.", parent=self)
-                return
         path = filedialog.askopenfilename(
             title="Import data table from CSV",
             filetypes=(("CSV", "*.csv"), ("All files", "*.*")),
@@ -492,35 +484,40 @@ class ModbusSlaveApp(tk.Tk):
         if not path:
             return
 
-        imported = 0
-        skipped = 0
         current_type = self.data_types[index].get()
         try:
             with Path(path).open("r", encoding="utf-8-sig", newline="") as stream:
-                reader = csv.DictReader(stream)
-                fields = {name.strip().lower() for name in (reader.fieldnames or [])}
-                if not {"address", "value"}.issubset(fields):
-                    raise ValueError("CSV must contain at least the address and value columns")
-                for row in reader:
-                    normalized = {(key or "").strip().lower(): (value or "") for key, value in row.items()}
-                    try:
-                        data_type = normalized.get("data_type", "").strip() or current_type
-                        address = self._parse_csv_int(normalized["address"])
-                        value = self._parse_csv_int(normalized["value"])
-                        if data_type in {"Coils", "Discrete Inputs"} and value not in {0, 1}:
-                            raise ValueError("Bit values must be 0 or 1")
+                records, skipped = parse_csv(stream, current_type)
+
+            configured_size = int(self.data_size.get())
+            if not 1 <= configured_size <= 65536:
+                raise ValueError("Data size must be between 1 and 65536")
+            required_size = max((record.address + 1 for record in records), default=1)
+            target_size = max(configured_size, required_size)
+
+            if self.runner.running and self.model and required_size > self.model.size:
+                raise ValueError(
+                    f"CSV requires Data size {required_size}. Stop the server and import the file again "
+                    "so the data table can be expanded safely."
+                )
+            if not self.model or (not self.runner.running and self.model.size < target_size):
+                self.model = DataModel(target_size)
+                self.data_size.set(str(target_size))
+                for (data_type, address), value in self.saved_values.items():
+                    if address < target_size:
                         self.model.set(data_type, address, [value])
-                        self.saved_values[(data_type, address)] = value
-                        self.labels[(data_type, address)] = normalized.get("label", "").strip()
-                        imported += 1
-                    except (KeyError, TypeError, ValueError):
-                        skipped += 1
-        except (OSError, UnicodeError, csv.Error, ValueError) as exc:
+
+            assert self.model is not None
+            for record in records:
+                self.model.set(record.data_type, record.address, [record.value])
+                self.saved_values[(record.data_type, record.address)] = record.value
+                self.labels[(record.data_type, record.address)] = record.label
+        except (OSError, UnicodeError, ValueError) as exc:
             messagebox.showerror("Unable to import CSV", str(exc), parent=self)
             return
 
         self._refresh_table()
-        message = f"Imported {imported} rows."
+        message = f"Imported {len(records)} rows."
         if skipped:
             message += f" Skipped {skipped} invalid rows."
         self._append_log(message)
@@ -555,7 +552,8 @@ class ModbusSlaveApp(tk.Tk):
                 for offset, value in enumerate(values):
                     address = start + offset
                     display = int(bool(value)) if data_type in {"Coils", "Discrete Inputs"} else int(value)
-                    writer.writerow((data_type, address, self.labels.get((data_type, address), ""), display))
+                    reference = format_reference_address(data_type, address)
+                    writer.writerow((data_type, reference, self.labels.get((data_type, address), ""), display))
         except (OSError, UnicodeError, csv.Error) as exc:
             messagebox.showerror("Unable to export CSV", str(exc), parent=self)
             return

@@ -4,10 +4,12 @@ import socket
 import threading
 import time
 import unittest
+from io import StringIO
 
 from pymodbus.client import ModbusTcpClient
 
 from modbus_app.config import AppConfig
+from modbus_app.csv_import import format_reference_address, parse_csv, reference_to_offset
 from modbus_app.server import DataModel, ModbusServerRunner
 
 
@@ -18,6 +20,83 @@ class DataModelTests(unittest.TestCase):
         model.set("Coils", 9, [1])
         self.assertEqual(model.get("Holding Registers", 0, 2), [1234, 0xFFFF])
         self.assertEqual(model.get("Coils", 9), [True])
+
+
+class CsvImportTests(unittest.TestCase):
+    def test_standard_display_addresses_round_trip_to_offsets(self) -> None:
+        expected = {
+            "Coils": "00001",
+            "Discrete Inputs": "10001",
+            "Input Registers": "30001",
+            "Holding Registers": "40001",
+        }
+
+        for data_type, reference in expected.items():
+            with self.subTest(data_type=data_type):
+                self.assertEqual(format_reference_address(data_type, 0), reference)
+                self.assertEqual(reference_to_offset(data_type, reference), 0)
+
+    def test_semicolon_csv_and_holding_register_references(self) -> None:
+        stream = StringIO(
+            "data_type;address;label;value\n"
+            "Holding Registers;40001;Temperature;12\n"
+            "Holding Registers;40403;Pressure;34\n"
+        )
+
+        records, skipped = parse_csv(stream, "Holding Registers")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual([record.address for record in records], [0, 402])
+        self.assertEqual([record.value for record in records], [12, 34])
+
+    def test_comma_csv_keeps_zero_based_addresses(self) -> None:
+        stream = StringIO("data_type,address,label,value\nHolding Registers,12,Speed,1500\n")
+
+        records, skipped = parse_csv(stream, "Holding Registers")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual(records[0].address, 12)
+
+    def test_reference_ranges_follow_data_type(self) -> None:
+        stream = StringIO(
+            "data_type,address,value\n"
+            "Coils,00001,1\n"
+            "Discrete Inputs,10001,1\n"
+            "Input Registers,30001,123\n"
+        )
+
+        records, skipped = parse_csv(stream, "Holding Registers")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual([record.address for record in records], [0, 0, 0])
+
+    def test_one_based_discrete_offsets_are_normalized(self) -> None:
+        stream = StringIO(
+            "data_type;address;label;value\n"
+            "Discrete Inputs;1;First input;0\n"
+            "Discrete Inputs;2;Second input;1\n"
+        )
+
+        records, skipped = parse_csv(stream, "Discrete Inputs")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual([record.address for record in records], [0, 1])
+        self.assertEqual(
+            [format_reference_address(record.data_type, record.address) for record in records],
+            ["10001", "10002"],
+        )
+
+    def test_zero_based_discrete_offsets_are_preserved(self) -> None:
+        stream = StringIO(
+            "data_type,address,value\n"
+            "Discrete Inputs,0,0\n"
+            "Discrete Inputs,1,1\n"
+        )
+
+        records, skipped = parse_csv(stream, "Discrete Inputs")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual([record.address for record in records], [0, 1])
 
 
 class TcpServerTests(unittest.TestCase):

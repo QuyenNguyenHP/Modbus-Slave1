@@ -47,12 +47,16 @@ Each table has **Import CSV** and **Export CSV** buttons. Exported files use UTF
 
 ```csv
 data_type,address,label,value
-Discrete Inputs,0,Run feedback,1
-Discrete Inputs,1,Alarm,0
-Holding Registers,0,Speed setpoint,1500
+Discrete Inputs,10001,Run feedback,1
+Discrete Inputs,10002,Alarm,0
+Holding Registers,40001,Speed setpoint,1500
 ```
 
 The `address` and `value` columns are required when importing. If `data_type` is omitted, rows are imported into the data type currently selected in that table. The `label` column is optional.
+
+Imports accept comma-, semicolon-, or tab-separated files. Legacy Modbus references are converted automatically: `10001` for Discrete Inputs, `30001` for Input Registers, and `40001` for Holding Registers all map to zero-based address `0`. When the server is stopped, importing a larger address range automatically increases **Data size**.
+
+For Coils and Discrete Inputs, files whose address list starts at `1` and contains no address `0` are treated as one-based offsets. For example, Discrete Input `1` is displayed as standard reference `10001`. Files containing address `0` remain zero-based.
 
 The default TCP port is `5020`, which normally does not require Administrator privileges. Using the standard port `502` may require elevated privileges or a Windows Firewall rule. For RTU, the selected COM port must not be in use by another application.
 
@@ -65,4 +69,4 @@ The default TCP port is `5020`, which normally does not require Administrator pr
 | Holding Registers | 03 | 06, 16 |
 | Input Registers | 04 | Editable from the UI only |
 
-Displayed addresses are zero-based Modbus addresses: row `0` in the UI corresponds to address `0` in a Master request.
+Displayed and exported addresses use standard Modbus references: `00001` for Coils, `10001` for Discrete Inputs, `30001` for Input Registers, and `40001` for Holding Registers. These first rows correspond to zero-based address `0` in a Master request. The **Start** field remains a zero-based offset.

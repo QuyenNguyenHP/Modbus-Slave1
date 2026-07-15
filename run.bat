@@ -1,9 +1,26 @@
 @echo off
 cd /d "%~dp0"
+set "PYTHON_CMD="
+if exist ".venv\Scripts\python.exe" set "PYTHON_CMD=.venv\Scripts\python.exe"
+if not defined PYTHON_CMD (
+    if exist "%LocalAppData%\Programs\Python\Launcher\py.exe" (
+        set "PYTHON_CMD=%LocalAppData%\Programs\Python\Launcher\py.exe -3"
+    ) else if exist "%LocalAppData%\Programs\Python\Python312\python.exe" (
+        set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python312\python.exe"
+    ) else if exist "%LocalAppData%\Programs\Python\Python311\python.exe" (
+        set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python311\python.exe"
+    ) else if exist "%LocalAppData%\Programs\Python\Python310\python.exe" (
+        set "PYTHON_CMD=%LocalAppData%\Programs\Python\Python310\python.exe"
+    ) else (
+        py -3 -c "import sys" >nul 2>nul && set "PYTHON_CMD=py -3"
+        if not defined PYTHON_CMD python -c "import sys" >nul 2>nul && set "PYTHON_CMD=python"
+    )
+)
 if not exist ".venv\Scripts\python.exe" (
     echo Creating the Python environment...
-    py -3 -m venv .venv 2>nul || python -m venv .venv
+    call %PYTHON_CMD% -m venv .venv
     if errorlevel 1 goto :no_python
+    set "PYTHON_CMD=.venv\Scripts\python.exe"
 )
 echo Installing/checking dependencies...
 ".venv\Scripts\python.exe" -m pip install -r requirements.txt
