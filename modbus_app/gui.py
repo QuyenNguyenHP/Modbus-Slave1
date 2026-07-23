@@ -103,6 +103,7 @@ class ModbusSlaveApp(tk.Tk):
         ]
         self.view_starts = [tk.StringVar(value="0"), tk.StringVar(value="0")]
         self.view_counts = [tk.StringVar(value="100"), tk.StringVar(value="100")]
+        self.filters = [tk.StringVar(value=""), tk.StringVar(value="")]
         self.status = tk.StringVar(value="Stopped")
 
     def _build_ui(self) -> None:
@@ -191,7 +192,7 @@ class ModbusSlaveApp(tk.Tk):
         panel = ttk.LabelFrame(parent, text=title, padding=6)
         panel.grid(row=0, column=index, sticky="nsew", padx=(0, 4) if index == 0 else (4, 0))
         panel.columnconfigure(0, weight=1)
-        panel.rowconfigure(3, weight=1)
+        panel.rowconfigure(4, weight=1)
 
         type_row = ttk.Frame(panel)
         type_row.grid(row=0, column=0, sticky="ew", pady=(0, 4))
@@ -212,13 +213,21 @@ class ModbusSlaveApp(tk.Tk):
         ttk.Entry(range_row, textvariable=self.view_counts[index], width=6).pack(side="left", padx=(4, 8))
         ttk.Button(range_row, text="Apply", command=self._refresh_table).pack(side="right")
 
+        filter_row = ttk.Frame(panel)
+        filter_row.grid(row=2, column=0, sticky="ew", pady=(0, 5))
+        ttk.Label(filter_row, text="Filter:").pack(side="left")
+        filter_entry = ttk.Entry(filter_row, textvariable=self.filters[index])
+        filter_entry.pack(side="left", fill="x", expand=True, padx=(4, 8))
+        filter_entry.bind("<KeyRelease>", lambda _event: self._refresh_table())
+        ttk.Button(filter_row, text="Clear", command=lambda: self._clear_filter(index)).pack(side="right")
+
         csv_row = ttk.Frame(panel)
-        csv_row.grid(row=2, column=0, sticky="ew", pady=(0, 5))
+        csv_row.grid(row=3, column=0, sticky="ew", pady=(0, 5))
         ttk.Button(csv_row, text="Import CSV", command=lambda: self._import_csv(index)).pack(side="left", fill="x", expand=True, padx=(0, 2))
         ttk.Button(csv_row, text="Export CSV", command=lambda: self._export_csv(index)).pack(side="left", fill="x", expand=True, padx=(2, 0))
 
         table_holder = ttk.Frame(panel)
-        table_holder.grid(row=3, column=0, sticky="nsew")
+        table_holder.grid(row=4, column=0, sticky="nsew")
         table_holder.rowconfigure(0, weight=1)
         table_holder.columnconfigure(0, weight=1)
         table = ttk.Treeview(
@@ -377,6 +386,37 @@ class ModbusSlaveApp(tk.Tk):
             table.delete(*table.get_children())
             return
 
+        filter_text = self.filters[index].get().strip().lower()
+        if filter_text:
+            row_data: list[tuple[str, str, str | int, tuple[str, ...]]] = []
+            for offset, value in enumerate(values):
+                address = start + offset
+                display = int(bool(value)) if is_bits else int(value)
+                label = self.labels.get((data_type, address), "")
+                shown_value: str | int = chr(9679) if is_bits else display
+                reference = format_reference_address(data_type, address)
+                if filter_text not in reference.lower() and filter_text not in label.lower():
+                    continue
+                tags = (("bit_on" if display else "bit_off"),) if is_bits else ()
+                row_data.append((reference, label, shown_value, tags))
+
+            rows = table.get_children()
+            if len(rows) != len(row_data):
+                table.delete(*rows)
+                rows = tuple(
+                    table.insert("", "end", values=(reference, label, shown_value))
+                    for reference, label, shown_value, _tags in row_data
+                )
+
+            for item, (reference, label, shown_value, tags) in zip(rows, row_data):
+                new_values = (reference, label, shown_value)
+                if tuple(str(part) for part in table.item(item, "values")) != tuple(str(part) for part in new_values):
+                    table.item(item, values=new_values)
+                table.item(item, tags=tags)
+                if reference == str(selected_address):
+                    table.selection_set(item)
+            return
+
         rows = table.get_children()
         expected_first = format_reference_address(data_type, start)
         expected_last = format_reference_address(data_type, start + count - 1)
@@ -409,6 +449,10 @@ class ModbusSlaveApp(tk.Tk):
             table.item(item, tags=(("bit_on" if display else "bit_off"),) if is_bits else ())
             if reference == str(selected_address):
                 table.selection_set(item)
+
+    def _clear_filter(self, index: int) -> None:
+        self.filters[index].set("")
+        self._refresh_table()
 
     def _handle_table_click(self, event: tk.Event[Any], index: int) -> str | None:
         if not self.model or self.data_types[index].get() not in {"Coils", "Discrete Inputs"}:

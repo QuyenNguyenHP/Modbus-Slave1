@@ -1,179 +1,4 @@
 data_type;address;label;value
-Holding Registers;40001;D/G#1 T/C Outlet Temp;0
-Holding Registers;40101;D/G#2 T/C Outlet Temp;0
-Holding Registers;40201;D/G#3 T/C Outlet Temp;0
-Holding Registers;40301;D/G#4 T/C Outlet Temp;0
-Holding Registers;40002;D/G#1 Oil Mist Level;0
-Holding Registers;40102;D/G#2 Oil Mist Level;0
-Holding Registers;40202;D/G#3 Oil Mist Level;0
-Holding Registers;40302;D/G#4 Oil Mist Level;0
-Holding Registers;40003;D/G#1 Stator Winding Temp U;0
-Holding Registers;40103;D/G#2 Stator Winding Temp U;0
-Holding Registers;40203;D/G#3 Stator Winding Temp U;0
-Holding Registers;40303;D/G#4 Stator Winding Temp U;0
-Holding Registers;40004;D/G#1 Stator Winding Temp V;0
-Holding Registers;40104;D/G#2 Stator Winding Temp V;0
-Holding Registers;40204;D/G#3 Stator Winding Temp V;0
-Holding Registers;40304;D/G#4 Stator Winding Temp V;0
-Holding Registers;40005;D/G#1 Stator Winding Temp W;0
-Holding Registers;40105;D/G#2 Stator Winding Temp W;0
-Holding Registers;40205;D/G#3 Stator Winding Temp W;0
-Holding Registers;40305;D/G#4 Stator Winding Temp W;0
-Holding Registers;40006;D/G#1 Bearing Temp (Fly-wheel side);0
-Holding Registers;40106;D/G#2 Bearing Temp (Fly-wheel side);0
-Holding Registers;40206;D/G#3 Bearing Temp (Fly-wheel side);0
-Holding Registers;40306;D/G#4 Bearing Temp (Fly-wheel side);0
-Holding Registers;40007;D/G#1 Bearing Temp (Anit-Fly-wheel side);0
-Holding Registers;40107;D/G#2 Bearing Temp (Anit-Fly-wheel side);0
-Holding Registers;40207;D/G#3 Bearing Temp (Anit-Fly-wheel side);0
-Holding Registers;40307;D/G#4 Bearing Temp (Anit-Fly-wheel side);0
-Holding Registers;40008;D/G#1 Cyl 1 Exhaust Temp;0
-Holding Registers;40108;D/G#2 Cyl 1 Exhaust Temp;0
-Holding Registers;40208;D/G#3 Cyl 1 Exhaust Temp;0
-Holding Registers;40308;D/G#4 Cyl 1 Exhaust Temp;0
-Holding Registers;40009;D/G#1 Cyl 2 Exhaust Temp;0
-Holding Registers;40109;D/G#2 Cyl 2 Exhaust Temp;0
-Holding Registers;40209;D/G#3 Cyl 2 Exhaust Temp;0
-Holding Registers;40309;D/G#4 Cyl 2 Exhaust Temp;0
-Holding Registers;40010;D/G#1 Cyl 3 Exhaust Temp;0
-Holding Registers;40110;D/G#2 Cyl 3 Exhaust Temp;0
-Holding Registers;40210;D/G#3 Cyl 3 Exhaust Temp;0
-Holding Registers;40310;D/G#4 Cyl 3 Exhaust Temp;0
-Holding Registers;40011;D/G#1 Cyl 4 Exhaust Temp;0
-Holding Registers;40111;D/G#2 Cyl 4 Exhaust Temp;0
-Holding Registers;40211;D/G#3 Cyl 4 Exhaust Temp;0
-Holding Registers;40311;D/G#4 Cyl 4 Exhaust Temp;0
-Holding Registers;40012;D/G#1 Cyl 5 Exhaust Temp;0
-Holding Registers;40112;D/G#2 Cyl 5 Exhaust Temp;0
-Holding Registers;40212;D/G#3 Cyl 5 Exhaust Temp;0
-Holding Registers;40312;D/G#4 Cyl 5 Exhaust Temp;0
-Holding Registers;40013;D/G#1 Cyl 6 Exhaust Temp;0
-Holding Registers;40113;D/G#2 Cyl 6 Exhaust Temp;0
-Holding Registers;40213;D/G#3 Cyl 6 Exhaust Temp;0
-Holding Registers;40313;D/G#4 Cyl 6 Exhaust Temp;0
-Holding Registers;40014;D/G#1 T/C Inlet Temp;0
-Holding Registers;40114;D/G#1 T/C Inlet Temp;0
-Holding Registers;40214;D/G#1 T/C Inlet Temp;0
-Holding Registers;40314;D/G#1 T/C Inlet Temp;0
-Holding Registers;40051;D/G#1 DO Transfer Flow;0
-Holding Registers;40151;D/G#2 DO Transfer Flow;0
-Holding Registers;40251;D/G#3 DO Transfer Flow;0
-Holding Registers;40351;D/G#4 DO Transfer Flow;0
-Holding Registers;40053;D/G#1 DO Engine Inlet Flow;0
-Holding Registers;40153;D/G#2 DO Engine Inlet Flow;0
-Holding Registers;40253;D/G#3 DO Engine Inlet Flow;0
-Holding Registers;40353;D/G#4 DO Engine Inlet Flow;0
-Holding Registers;40055;D/G#1 DO Engine Return Flow;0
-Holding Registers;40155;D/G#2 DO Engine Return Flow;0
-Holding Registers;40255;D/G#3 DO Engine Return Flow;0
-Holding Registers;40355;D/G#4 DO Engine Return Flow;0
-Holding Registers;40057;D/G#1 HO Transfer Flow;0
-Holding Registers;40157;D/G#2 HO Transfer Flow;0
-Holding Registers;40257;D/G#3 HO Transfer Flow;0
-Holding Registers;40357;D/G#4 HO Transfer Flow;0
-Holding Registers;40059;D/G#1 HO Engine Inlet Flow;0
-Holding Registers;40159;D/G#2 HO Engine Inlet Flow;0
-Holding Registers;40259;D/G#3 HO Engine Inlet Flow;0
-Holding Registers;40359;D/G#4 HO Engine Inlet Flow;0
-Holding Registers;40061;D/G#1 HO Engine Return Flow;0
-Holding Registers;40161;D/G#2 HO Engine Return Flow;0
-Holding Registers;40261;D/G#3 HO Engine Return Flow;0
-Holding Registers;40361;D/G#4 HO Engine Return Flow;0
-Holding Registers;40015;D/G#1 Fuel Oil Pressure;0
-Holding Registers;40115;D/G#2 Fuel Oil Pressure;0
-Holding Registers;40215;D/G#3 Fuel Oil Pressure;0
-Holding Registers;40315;D/G#4 Fuel Oil Pressure;0
-Holding Registers;40016;D/G#1 Jacket Water Pressure;0
-Holding Registers;40116;D/G#2 Jacket Water Pressure;0
-Holding Registers;40216;D/G#3 Jacket Water Pressure;0
-Holding Registers;40316;D/G#4 Jacket Water Pressure;0
-Holding Registers;40017;D/G#1 Cooler Water Pressure;0
-Holding Registers;40117;D/G#2 Cooler Water Pressure;0
-Holding Registers;40217;D/G#3 Cooler Water Pressure;0
-Holding Registers;40317;D/G#4 Cooler Water Pressure;0
-Holding Registers;40018;D/G#1 Engine LO Pressure;0
-Holding Registers;40118;D/G#2 Engine LO Pressure;0
-Holding Registers;40218;D/G#3 Engine LO Pressure;0
-Holding Registers;40318;D/G#4 Engine LO Pressure;0
-Holding Registers;40019;D/G#1 Turbo LO Pressure;0
-Holding Registers;40119;D/G#2 Turbo LO Pressure;0
-Holding Registers;40219;D/G#3 Turbo LO Pressure;0
-Holding Registers;40319;D/G#4 Turbo LO Pressure;0
-Holding Registers;40020;D/G#1 Intake Air Pressure;0
-Holding Registers;40120;D/G#2 Intake Air Pressure;0
-Holding Registers;40220;D/G#3 Intake Air Pressure;0
-Holding Registers;40320;D/G#4 Intake Air Pressure;0
-Holding Registers;40021;D/G#1 Jacket Water Inlet Temp;0
-Holding Registers;40121;D/G#2 Jacket Water Inlet Temp;0
-Holding Registers;40221;D/G#3 Jacket Water Inlet Temp;0
-Holding Registers;40321;D/G#4 Jacket Water Inlet Temp;0
-Holding Registers;40022;D/G#1 Jacket Water Outlet Temp;0
-Holding Registers;40122;D/G#2 Jacket Water Outlet Temp;0
-Holding Registers;40222;D/G#3 Jacket Water Outlet Temp;0
-Holding Registers;40322;D/G#4 Jacket Water Outlet Temp;0
-Holding Registers;40023;D/G#1 Cooler Water Inlet Temp;0
-Holding Registers;40123;D/G#2 Cooler Water Inlet Temp;0
-Holding Registers;40223;D/G#3 Cooler Water Inlet Temp;0
-Holding Registers;40323;D/G#4 Cooler Water Inlet Temp;0
-Holding Registers;40024;D/G#1 Cooler Water Outlet Temp;0
-Holding Registers;40124;D/G#2 Cooler Water Outlet Temp;0
-Holding Registers;40224;D/G#3 Cooler Water Outlet Temp;0
-Holding Registers;40324;D/G#4 Cooler Water Outlet Temp;0
-Holding Registers;40025;D/G#1 LO Cooler Inlet Temp;0
-Holding Registers;40125;D/G#2 LO Cooler Inlet Temp;0
-Holding Registers;40225;D/G#3 LO Cooler Inlet Temp;0
-Holding Registers;40325;D/G#4 LO Cooler Inlet Temp;0
-Holding Registers;40026;D/G#1 LO Cooler Outlet Temp;0
-Holding Registers;40126;D/G#2 LO Cooler Outlet Temp;0
-Holding Registers;40226;D/G#3 LO Cooler Outlet Temp;0
-Holding Registers;40326;D/G#4 LO Cooler Outlet Temp;0
-Holding Registers;40027;D/G#1 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
-Holding Registers;40127;D/G#2 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
-Holding Registers;40227;D/G#3 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
-Holding Registers;40327;D/G#4 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
-Holding Registers;40401; PRESS SENSOR FOR AIR RECEIVER;0
-Holding Registers;40402; PRESS SENSOR FOR AIR RECEIVER;0
-Holding Registers;40403; PRESS SENSOR FOR AIR RECEIVER;0
-Holding Registers;40028;D/G#1 DO Engine Inlet Temp;0
-Holding Registers;40128;D/G#2 DO Engine Inlet Temp;0
-Holding Registers;40228;D/G#3 DO Engine Inlet Temp;0
-Holding Registers;40328;D/G#4 DO Engine Inlet Temp;0
-Holding Registers;40029;D/G#1 DO Engine Return Temp;0
-Holding Registers;40129;D/G#2 DO Engine Return Temp;0
-Holding Registers;40229;D/G#3 DO Engine Return Temp;0
-Holding Registers;40329;D/G#4 DO Engine Return Temp;0
-Holding Registers;40030;D/G#1 HO Engine Inlet Temp;0
-Holding Registers;40130;D/G#2 HO Engine Inlet Temp;0
-Holding Registers;40230;D/G#3 HO Engine Inlet Temp;0
-Holding Registers;40330;D/G#4 HO Engine Inlet Temp;0
-Holding Registers;40031;D/G#1 HO Engine Return Temp;0
-Holding Registers;40131;D/G#2 HO Engine Return Temp;0
-Holding Registers;40231;D/G#3 HO Engine Return Temp;0
-Holding Registers;40331;D/G#4 HO Engine Return Temp;0
-Holding Registers;40033;D/G#1 Generator Voltage ;0
-Holding Registers;40133;D/G#2 Generator Voltage ;0
-Holding Registers;40233;D/G#3 Generator Voltage ;0
-Holding Registers;40333;D/G#4 Generator Voltage;0
-Holding Registers;40034;D/G#1 Generator Frequency;0
-Holding Registers;40134;D/G#2 Generator Frequency;0
-Holding Registers;40234;D/G#3 Generator Frequency  ;0
-Holding Registers;40334;D/G#4 Generator Frequency  ;0
-Holding Registers;40036;D/G#1 Generator Current;0
-Holding Registers;40136;D/G#2 Generator Current;0
-Holding Registers;40236;D/G#3 Generator Current  ;0
-Holding Registers;40336;D/G#4 Generator Current  ;0
-Holding Registers;40063;D/G#1 Engine Running hours  ;0
-Holding Registers;40163;D/G#2 Engine Running hours;0
-Holding Registers;40263;D/G#3 Engine Running hours;0
-Holding Registers;40363;D/G#4 Engine Running hours;0
-Holding Registers;40038;D/G#1 Engine Power  ;0
-Holding Registers;40138;D/G#2 Engine Power  ;0
-Holding Registers;40238;D/G#3 Engine Power  ;0
-Holding Registers;40338;D/G#4 Engine Power  ;0
-Holding Registers;40039;D/G#1 Engine Speed;0
-Holding Registers;40139;D/G#2 Engine Speed;0
-Holding Registers;40239;D/G#3 Engine Speed;0
-Holding Registers;40339;D/G#4 Engine Speed;0
 Discrete Inputs;1;D/G#1 Over Speed;0
 Discrete Inputs;2;D/G#1 Engine Start Failure;0
 Discrete Inputs;3;D/G#1 Turbo-charger gas outlet temp switch (2nd);0
@@ -183,7 +8,6 @@ Discrete Inputs;6;D/G#1 Jacket water thermal switch (2nd);0
 Discrete Inputs;7;D/G#1 L.O press.switch for turbo-charger(2nd);0
 Discrete Inputs;8;D/G#1 Jacket water press.switch (2nd);0
 Discrete Inputs;12;D/G#1 Jacket water flow relay;0
-Discrete Inputs;12;D/G#1 T/C L.O filter differential press switch;0
 Discrete Inputs;18;D/G#1 Light fault of oil mist detector;0
 Discrete Inputs;19;D/G#1 Light fault of oil mist detector system failure;0
 Discrete Inputs;20;D/G#1 LO press.switch for engine(1st);0
@@ -269,7 +93,6 @@ Discrete Inputs;406;D/G#2 Jacket water thermal switch (2nd);0
 Discrete Inputs;407;D/G#2 L.O press.switch for turbo-charger(2nd);0
 Discrete Inputs;408;D/G#2 Jacket water press.switch (2nd);0
 Discrete Inputs;412;D/G#2 Jacket water flow relay;0
-Discrete Inputs;412;D/G#2 T/C L.O filter differential press switch;0
 Discrete Inputs;418;D/G#2 Light fault of oil mist detector;0
 Discrete Inputs;419;D/G#2 Light fault of oil mist detector system failure;0
 Discrete Inputs;420;D/G#2 LO press.switch for engine(1st);0
@@ -355,7 +178,6 @@ Discrete Inputs;806;D/G#3 Jacket water thermal switch (2nd);0
 Discrete Inputs;807;D/G#3 L.O press.switch for turbo-charger(2nd);0
 Discrete Inputs;808;D/G#3 Jacket water press.switch (2nd);0
 Discrete Inputs;812;D/G#3 Jacket water flow relay;0
-Discrete Inputs;812;D/G#3 T/C L.O filter differential press switch;0
 Discrete Inputs;818;D/G#3 Light fault of oil mist detector;0
 Discrete Inputs;819;D/G#3 Light fault of oil mist detector system failure;0
 Discrete Inputs;820;D/G#3 LO press.switch for engine(1st);0
@@ -529,7 +351,6 @@ Discrete Inputs;1612; Level switch for F.O drain tank level control;0
 Discrete Inputs;1613; Level switch for F.O drain tank;0
 Discrete Inputs;1614; Press switch for auto back wash filter;0
 Discrete Inputs;1616; No.1 Air Compressor - Auto mode;0
-Discrete Inputs;1616; No.2 Air Compressor - Abnormal trip;0
 Discrete Inputs;1617; No.2 Air Compressor - Auto start;0
 Discrete Inputs;1619; Thermostat switch for line heater;0
 Discrete Inputs;1620; Thermostat switch for line heater;0
@@ -755,3 +576,178 @@ Discrete Inputs;1866; Heat trace No.21;0
 Discrete Inputs;1867; Heat trace No.22;0
 Discrete Inputs;1868; Heat trace No.23;0
 Discrete Inputs;1869; Heat trace No.24;0
+Holding Registers;40001;D/G#1 T/C Outlet Temp;0
+Holding Registers;40002;D/G#1 Oil Mist Level;0
+Holding Registers;40003;D/G#1 Stator Winding Temp U;0
+Holding Registers;40004;D/G#1 Stator Winding Temp V;0
+Holding Registers;40005;D/G#1 Stator Winding Temp W;0
+Holding Registers;40006;D/G#1 Bearing Temp (Fly-wheel side);0
+Holding Registers;40007;D/G#1 Bearing Temp (Anit-Fly-wheel side);0
+Holding Registers;40008;D/G#1 Cyl 1 Exhaust Temp;0
+Holding Registers;40009;D/G#1 Cyl 2 Exhaust Temp;0
+Holding Registers;40010;D/G#1 Cyl 3 Exhaust Temp;0
+Holding Registers;40011;D/G#1 Cyl 4 Exhaust Temp;0
+Holding Registers;40012;D/G#1 Cyl 5 Exhaust Temp;0
+Holding Registers;40013;D/G#1 Cyl 6 Exhaust Temp;0
+Holding Registers;40014;D/G#1 T/C Inlet Temp;0
+Holding Registers;40015;D/G#1 Fuel Oil Pressure;0
+Holding Registers;40016;D/G#1 Jacket Water Pressure;0
+Holding Registers;40017;D/G#1 Cooler Water Pressure;0
+Holding Registers;40018;D/G#1 Engine LO Pressure;0
+Holding Registers;40019;D/G#1 Turbo LO Pressure;0
+Holding Registers;40020;D/G#1 Intake Air Pressure;0
+Holding Registers;40021;D/G#1 Jacket Water Inlet Temp;0
+Holding Registers;40022;D/G#1 Jacket Water Outlet Temp;0
+Holding Registers;40023;D/G#1 Cooler Water Inlet Temp;0
+Holding Registers;40024;D/G#1 Cooler Water Outlet Temp;0
+Holding Registers;40025;D/G#1 LO Cooler Inlet Temp;0
+Holding Registers;40026;D/G#1 LO Cooler Outlet Temp;0
+Holding Registers;40027;D/G#1 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
+Holding Registers;40028;D/G#1 DO Engine Inlet Temp;0
+Holding Registers;40029;D/G#1 DO Engine Return Temp;0
+Holding Registers;40030;D/G#1 HO Engine Inlet Temp;0
+Holding Registers;40031;D/G#1 HO Engine Return Temp;0
+Holding Registers;40033;D/G#1 Generator Voltage ;0
+Holding Registers;40034;D/G#1 Generator Frequency;0
+Holding Registers;40036;D/G#1 Generator Current;0
+Holding Registers;40038;D/G#1 Engine Power  ;0
+Holding Registers;40039;D/G#1 Engine Speed;0
+Holding Registers;40051;D/G#1 DO Transfer Flow;0
+Holding Registers;40053;D/G#1 DO Engine Inlet Flow;0
+Holding Registers;40055;D/G#1 DO Engine Return Flow;0
+Holding Registers;40057;D/G#1 HO Transfer Flow;0
+Holding Registers;40059;D/G#1 HO Engine Inlet Flow;0
+Holding Registers;40061;D/G#1 HO Engine Return Flow;0
+Holding Registers;40063;D/G#1 Engine Running hours  ;0
+Holding Registers;40101;D/G#2 T/C Outlet Temp;0
+Holding Registers;40102;D/G#2 Oil Mist Level;0
+Holding Registers;40103;D/G#2 Stator Winding Temp U;0
+Holding Registers;40104;D/G#2 Stator Winding Temp V;0
+Holding Registers;40105;D/G#2 Stator Winding Temp W;0
+Holding Registers;40106;D/G#2 Bearing Temp (Fly-wheel side);0
+Holding Registers;40107;D/G#2 Bearing Temp (Anit-Fly-wheel side);0
+Holding Registers;40108;D/G#2 Cyl 1 Exhaust Temp;0
+Holding Registers;40109;D/G#2 Cyl 2 Exhaust Temp;0
+Holding Registers;40110;D/G#2 Cyl 3 Exhaust Temp;0
+Holding Registers;40111;D/G#2 Cyl 4 Exhaust Temp;0
+Holding Registers;40112;D/G#2 Cyl 5 Exhaust Temp;0
+Holding Registers;40113;D/G#2 Cyl 6 Exhaust Temp;0
+Holding Registers;40114;D/G#1 T/C Inlet Temp;0
+Holding Registers;40115;D/G#2 Fuel Oil Pressure;0
+Holding Registers;40116;D/G#2 Jacket Water Pressure;0
+Holding Registers;40117;D/G#2 Cooler Water Pressure;0
+Holding Registers;40118;D/G#2 Engine LO Pressure;0
+Holding Registers;40119;D/G#2 Turbo LO Pressure;0
+Holding Registers;40120;D/G#2 Intake Air Pressure;0
+Holding Registers;40121;D/G#2 Jacket Water Inlet Temp;0
+Holding Registers;40122;D/G#2 Jacket Water Outlet Temp;0
+Holding Registers;40123;D/G#2 Cooler Water Inlet Temp;0
+Holding Registers;40124;D/G#2 Cooler Water Outlet Temp;0
+Holding Registers;40125;D/G#2 LO Cooler Inlet Temp;0
+Holding Registers;40126;D/G#2 LO Cooler Outlet Temp;0
+Holding Registers;40127;D/G#2 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
+Holding Registers;40128;D/G#2 DO Engine Inlet Temp;0
+Holding Registers;40129;D/G#2 DO Engine Return Temp;0
+Holding Registers;40130;D/G#2 HO Engine Inlet Temp;0
+Holding Registers;40131;D/G#2 HO Engine Return Temp;0
+Holding Registers;40133;D/G#2 Generator Voltage ;0
+Holding Registers;40134;D/G#2 Generator Frequency;0
+Holding Registers;40136;D/G#2 Generator Current;0
+Holding Registers;40138;D/G#2 Engine Power  ;0
+Holding Registers;40139;D/G#2 Engine Speed;0
+Holding Registers;40151;D/G#2 DO Transfer Flow;0
+Holding Registers;40153;D/G#2 DO Engine Inlet Flow;0
+Holding Registers;40155;D/G#2 DO Engine Return Flow;0
+Holding Registers;40157;D/G#2 HO Transfer Flow;0
+Holding Registers;40159;D/G#2 HO Engine Inlet Flow;0
+Holding Registers;40161;D/G#2 HO Engine Return Flow;0
+Holding Registers;40163;D/G#2 Engine Running hours;0
+Holding Registers;40201;D/G#3 T/C Outlet Temp;0
+Holding Registers;40202;D/G#3 Oil Mist Level;0
+Holding Registers;40203;D/G#3 Stator Winding Temp U;0
+Holding Registers;40204;D/G#3 Stator Winding Temp V;0
+Holding Registers;40205;D/G#3 Stator Winding Temp W;0
+Holding Registers;40206;D/G#3 Bearing Temp (Fly-wheel side);0
+Holding Registers;40207;D/G#3 Bearing Temp (Anit-Fly-wheel side);0
+Holding Registers;40208;D/G#3 Cyl 1 Exhaust Temp;0
+Holding Registers;40209;D/G#3 Cyl 2 Exhaust Temp;0
+Holding Registers;40210;D/G#3 Cyl 3 Exhaust Temp;0
+Holding Registers;40211;D/G#3 Cyl 4 Exhaust Temp;0
+Holding Registers;40212;D/G#3 Cyl 5 Exhaust Temp;0
+Holding Registers;40213;D/G#3 Cyl 6 Exhaust Temp;0
+Holding Registers;40214;D/G#1 T/C Inlet Temp;0
+Holding Registers;40215;D/G#3 Fuel Oil Pressure;0
+Holding Registers;40216;D/G#3 Jacket Water Pressure;0
+Holding Registers;40217;D/G#3 Cooler Water Pressure;0
+Holding Registers;40218;D/G#3 Engine LO Pressure;0
+Holding Registers;40219;D/G#3 Turbo LO Pressure;0
+Holding Registers;40220;D/G#3 Intake Air Pressure;0
+Holding Registers;40221;D/G#3 Jacket Water Inlet Temp;0
+Holding Registers;40222;D/G#3 Jacket Water Outlet Temp;0
+Holding Registers;40223;D/G#3 Cooler Water Inlet Temp;0
+Holding Registers;40224;D/G#3 Cooler Water Outlet Temp;0
+Holding Registers;40225;D/G#3 LO Cooler Inlet Temp;0
+Holding Registers;40226;D/G#3 LO Cooler Outlet Temp;0
+Holding Registers;40227;D/G#3 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
+Holding Registers;40228;D/G#3 DO Engine Inlet Temp;0
+Holding Registers;40229;D/G#3 DO Engine Return Temp;0
+Holding Registers;40230;D/G#3 HO Engine Inlet Temp;0
+Holding Registers;40231;D/G#3 HO Engine Return Temp;0
+Holding Registers;40233;D/G#3 Generator Voltage ;0
+Holding Registers;40234;D/G#3 Generator Frequency  ;0
+Holding Registers;40236;D/G#3 Generator Current  ;0
+Holding Registers;40238;D/G#3 Engine Power  ;0
+Holding Registers;40239;D/G#3 Engine Speed;0
+Holding Registers;40251;D/G#3 DO Transfer Flow;0
+Holding Registers;40253;D/G#3 DO Engine Inlet Flow;0
+Holding Registers;40255;D/G#3 DO Engine Return Flow;0
+Holding Registers;40257;D/G#3 HO Transfer Flow;0
+Holding Registers;40259;D/G#3 HO Engine Inlet Flow;0
+Holding Registers;40261;D/G#3 HO Engine Return Flow;0
+Holding Registers;40263;D/G#3 Engine Running hours;0
+Holding Registers;40301;D/G#4 T/C Outlet Temp;0
+Holding Registers;40302;D/G#4 Oil Mist Level;0
+Holding Registers;40303;D/G#4 Stator Winding Temp U;0
+Holding Registers;40304;D/G#4 Stator Winding Temp V;0
+Holding Registers;40305;D/G#4 Stator Winding Temp W;0
+Holding Registers;40306;D/G#4 Bearing Temp (Fly-wheel side);0
+Holding Registers;40307;D/G#4 Bearing Temp (Anit-Fly-wheel side);0
+Holding Registers;40308;D/G#4 Cyl 1 Exhaust Temp;0
+Holding Registers;40309;D/G#4 Cyl 2 Exhaust Temp;0
+Holding Registers;40310;D/G#4 Cyl 3 Exhaust Temp;0
+Holding Registers;40311;D/G#4 Cyl 4 Exhaust Temp;0
+Holding Registers;40312;D/G#4 Cyl 5 Exhaust Temp;0
+Holding Registers;40313;D/G#4 Cyl 6 Exhaust Temp;0
+Holding Registers;40314;D/G#1 T/C Inlet Temp;0
+Holding Registers;40315;D/G#4 Fuel Oil Pressure;0
+Holding Registers;40316;D/G#4 Jacket Water Pressure;0
+Holding Registers;40317;D/G#4 Cooler Water Pressure;0
+Holding Registers;40318;D/G#4 Engine LO Pressure;0
+Holding Registers;40319;D/G#4 Turbo LO Pressure;0
+Holding Registers;40320;D/G#4 Intake Air Pressure;0
+Holding Registers;40321;D/G#4 Jacket Water Inlet Temp;0
+Holding Registers;40322;D/G#4 Jacket Water Outlet Temp;0
+Holding Registers;40323;D/G#4 Cooler Water Inlet Temp;0
+Holding Registers;40324;D/G#4 Cooler Water Outlet Temp;0
+Holding Registers;40325;D/G#4 LO Cooler Inlet Temp;0
+Holding Registers;40326;D/G#4 LO Cooler Outlet Temp;0
+Holding Registers;40327;D/G#4 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER;0
+Holding Registers;40328;D/G#4 DO Engine Inlet Temp;0
+Holding Registers;40329;D/G#4 DO Engine Return Temp;0
+Holding Registers;40330;D/G#4 HO Engine Inlet Temp;0
+Holding Registers;40331;D/G#4 HO Engine Return Temp;0
+Holding Registers;40333;D/G#4 Generator Voltage;0
+Holding Registers;40334;D/G#4 Generator Frequency  ;0
+Holding Registers;40336;D/G#4 Generator Current  ;0
+Holding Registers;40338;D/G#4 Engine Power  ;0
+Holding Registers;40339;D/G#4 Engine Speed;0
+Holding Registers;40351;D/G#4 DO Transfer Flow;0
+Holding Registers;40353;D/G#4 DO Engine Inlet Flow;0
+Holding Registers;40355;D/G#4 DO Engine Return Flow;0
+Holding Registers;40357;D/G#4 HO Transfer Flow;0
+Holding Registers;40359;D/G#4 HO Engine Inlet Flow;0
+Holding Registers;40361;D/G#4 HO Engine Return Flow;0
+Holding Registers;40363;D/G#4 Engine Running hours;0
+Holding Registers;40401; PRESS SENSOR FOR AIR RECEIVER;0
+Holding Registers;40402; PRESS SENSOR FOR AIR RECEIVER;0
+Holding Registers;40403; PRESS SENSOR FOR AIR RECEIVER;0
