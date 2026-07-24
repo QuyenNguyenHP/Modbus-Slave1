@@ -172,7 +172,21 @@ class ModbusSlaveApp(tk.Tk):
         data_frame.grid(row=1, column=0, sticky="nsew")
         data_frame.columnconfigure(0, weight=1)
         data_frame.columnconfigure(1, weight=1)
-        data_frame.rowconfigure(0, weight=1)
+        data_frame.rowconfigure(1, weight=1)
+
+        csv_actions = ttk.Frame(data_frame)
+        csv_actions.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 8))
+        ttk.Button(
+            csv_actions,
+            text="Import CSV (Both Tables)",
+            command=self._import_csv,
+        ).pack(side="left", fill="x", expand=True, padx=(0, 2))
+        ttk.Button(
+            csv_actions,
+            text="Export CSV (Both Tables)",
+            command=self._export_csv,
+        ).pack(side="left", fill="x", expand=True, padx=(2, 0))
+
         self.tables: list[ttk.Treeview] = []
         self._build_data_panel(data_frame, 0, "Table 1 - Digital Inputs")
         self._build_data_panel(data_frame, 1, "Table 2 - Holding Registers")
@@ -190,9 +204,9 @@ class ModbusSlaveApp(tk.Tk):
 
     def _build_data_panel(self, parent: ttk.Frame, index: int, title: str) -> None:
         panel = ttk.LabelFrame(parent, text=title, padding=6)
-        panel.grid(row=0, column=index, sticky="nsew", padx=(0, 4) if index == 0 else (4, 0))
+        panel.grid(row=1, column=index, sticky="nsew", padx=(0, 4) if index == 0 else (4, 0))
         panel.columnconfigure(0, weight=1)
-        panel.rowconfigure(4, weight=1)
+        panel.rowconfigure(3, weight=1)
 
         type_row = ttk.Frame(panel)
         type_row.grid(row=0, column=0, sticky="ew", pady=(0, 4))
@@ -221,13 +235,8 @@ class ModbusSlaveApp(tk.Tk):
         filter_entry.bind("<KeyRelease>", lambda _event: self._refresh_table())
         ttk.Button(filter_row, text="Clear", command=lambda: self._clear_filter(index)).pack(side="right")
 
-        csv_row = ttk.Frame(panel)
-        csv_row.grid(row=3, column=0, sticky="ew", pady=(0, 5))
-        ttk.Button(csv_row, text="Import CSV", command=lambda: self._import_csv(index)).pack(side="left", fill="x", expand=True, padx=(0, 2))
-        ttk.Button(csv_row, text="Export CSV", command=lambda: self._export_csv(index)).pack(side="left", fill="x", expand=True, padx=(2, 0))
-
         table_holder = ttk.Frame(panel)
-        table_holder.grid(row=4, column=0, sticky="nsew")
+        table_holder.grid(row=3, column=0, sticky="nsew")
         table_holder.rowconfigure(0, weight=1)
         table_holder.columnconfigure(0, weight=1)
         table = ttk.Treeview(
@@ -520,15 +529,18 @@ class ModbusSlaveApp(tk.Tk):
         except ValueError as exc:
             messagebox.showerror("Invalid value", str(exc), parent=self)
 
-    def _import_csv(self, index: int) -> None:
+    def _import_csv(self) -> None:
         path = filedialog.askopenfilename(
-            title="Import data table from CSV",
+            title="Import both data tables from CSV",
             filetypes=(("CSV", "*.csv"), ("All files", "*.*")),
         )
         if not path:
             return
 
-        current_type = self.data_types[index].get()
+        # Files exported by this application include data_type on every row, so
+        # records for both visible tables are restored to their matching blocks.
+        # For older files without data_type, retain the Table 1 type as fallback.
+        current_type = self.data_types[0].get()
         try:
             with Path(path).open("r", encoding="utf-8-sig", newline="") as stream:
                 records, skipped = parse_csv(stream, current_type)
@@ -567,24 +579,27 @@ class ModbusSlaveApp(tk.Tk):
         self._append_log(message)
         messagebox.showinfo("CSV import complete", message, parent=self)
 
-    def _export_csv(self, index: int) -> None:
+    def _export_csv(self) -> None:
         if not self.model:
             messagebox.showwarning("No data", "Start the Modbus Slave before exporting CSV.", parent=self)
             return
-        data_type = self.data_types[index].get()
+
+        table_rows: list[tuple[str, int, list[Any]]] = []
         try:
-            start = int(self.view_starts[index].get())
-            count = int(self.view_counts[index].get())
-            values = self.model.get(data_type, start, count)
+            for index in range(2):
+                data_type = self.data_types[index].get()
+                start = int(self.view_starts[index].get())
+                count = int(self.view_counts[index].get())
+                values = self.model.get(data_type, start, count)
+                table_rows.append((data_type, start, values))
         except (TypeError, ValueError) as exc:
             messagebox.showerror("Invalid range", str(exc), parent=self)
             return
 
-        default_name = data_type.lower().replace(" ", "_") + ".csv"
         path = filedialog.asksaveasfilename(
-            title="Export data table to CSV",
+            title="Export both data tables to CSV",
             defaultextension=".csv",
-            initialfile=default_name,
+            initialfile="modbus_data_tables.csv",
             filetypes=(("CSV", "*.csv"),),
         )
         if not path:
@@ -593,15 +608,17 @@ class ModbusSlaveApp(tk.Tk):
             with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
                 writer = csv.writer(stream)
                 writer.writerow(("data_type", "address", "label", "value"))
-                for offset, value in enumerate(values):
-                    address = start + offset
-                    display = int(bool(value)) if data_type in {"Coils", "Discrete Inputs"} else int(value)
-                    reference = format_reference_address(data_type, address)
-                    writer.writerow((data_type, reference, self.labels.get((data_type, address), ""), display))
+                for data_type, start, values in table_rows:
+                    for offset, value in enumerate(values):
+                        address = start + offset
+                        display = int(bool(value)) if data_type in {"Coils", "Discrete Inputs"} else int(value)
+                        reference = format_reference_address(data_type, address)
+                        writer.writerow((data_type, reference, self.labels.get((data_type, address), ""), display))
         except (OSError, UnicodeError, csv.Error) as exc:
             messagebox.showerror("Unable to export CSV", str(exc), parent=self)
             return
-        message = f"Exported {len(values)} rows to {Path(path).name}."
+        exported_count = sum(len(values) for _, _, values in table_rows)
+        message = f"Exported {exported_count} rows from both tables to {Path(path).name}."
         self._append_log(message)
         messagebox.showinfo("CSV export complete", message, parent=self)
 

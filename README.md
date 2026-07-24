@@ -11,7 +11,7 @@ A configurable desktop Modbus Slave/Server simulator supporting **Modbus TCP** a
 - Display Address, Label, and Value; double-click a label or value to edit it.
 - Show Coils and Discrete Inputs as status dots; click a dot to toggle gray (`0`) and green (`1`).
 - Use `dq logo.jpeg` as the application window and taskbar icon.
-- Import and export each table as CSV.
+- Import and export both visible tables together in one CSV file.
 - Automatically detect COM ports, save the most recent settings, and import/export JSON settings.
 - Show server status and activity logs in real time.
 
@@ -43,7 +43,9 @@ python app.py
 
 ## CSV format
 
-Each table has **Import CSV** and **Export CSV** buttons. Exported files use UTF-8 and this structure:
+The shared **Import CSV (Both Tables)** and **Export CSV (Both Tables)** buttons
+load or save both visible tables in one operation. Exported files use UTF-8 and
+this structure:
 
 ```csv
 data_type,address,label,value
@@ -52,7 +54,11 @@ Discrete Inputs,10002,Alarm,0
 Holding Registers,40001,Speed setpoint,1500
 ```
 
-The `address` and `value` columns are required when importing. If `data_type` is omitted, rows are imported into the data type currently selected in that table. The `label` column is optional.
+The `address` and `value` columns are required when importing. Keep the
+`data_type` column when a file contains data for both tables so each row is sent
+to the correct Modbus data block. For compatibility with older files, if
+`data_type` is omitted, rows are imported into the data type selected in Table 1.
+The `label` column is optional.
 
 Imports accept comma-, semicolon-, or tab-separated files. Legacy Modbus references are converted automatically: `10001` for Discrete Inputs, `30001` for Input Registers, and `40001` for Holding Registers all map to zero-based address `0`. When the server is stopped, importing a larger address range automatically increases **Data size**.
 
