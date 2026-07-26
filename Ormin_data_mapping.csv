@@ -357,8 +357,8 @@ Discrete Inputs,1624, Thermostat switch for HO Service tank(upper),0
 Discrete Inputs,1625, (Thermostat switch for HO Service tank heater),0
 Discrete Inputs,1626, Thermostat switch for HO Engine inlet,0
 Discrete Inputs,1627, Thermostat switch for HO Engine inlet,0
-Discrete Inputs,1628, Press switch for HO piping,0
-Discrete Inputs,1629, Press switch for DO piping,0
+Discrete Inputs,1628, Press switch for HO piping - (HO line),0
+Discrete Inputs,1629, Press switch for DO piping - (DO line),0
 Discrete Inputs,1630, Thermostat switch for Drain Tank ,0
 Discrete Inputs,1631, (Thermostat switch for Drain Tank Heater),0
 Discrete Inputs,1636, No.1 Air Compressor - Auto start,0
