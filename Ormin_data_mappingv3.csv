@@ -1,0 +1,201 @@
+﻿data_type,address,label,value,range
+Discrete Inputs,10001,D/G#1 Over Speed,1,
+Discrete Inputs,10002,D/G#1 Engine Start Failure,1,
+Discrete Inputs,10003,D/G#1 Turbo-charger gas outlet temp switch (2nd),0,
+Discrete Inputs,10004,D/G#1 Heavy fault of oil mist detector,1,
+Discrete Inputs,10005,D/G#1 L.O press.switch for engine (2nd),0,
+Discrete Inputs,10006,D/G#1 Jacket water thermal switch (2nd),0,
+Discrete Inputs,10007,D/G#1 L.O press.switch for turbo-charger(2nd),1,
+Discrete Inputs,10008,D/G#1 Jacket water press.switch (2nd),0,
+Discrete Inputs,10009,,0,
+Discrete Inputs,10010,,0,
+Discrete Inputs,10011,,0,
+Discrete Inputs,10012,D/G#1 Jacket water flow relay,0,
+Discrete Inputs,10013,,0,
+Discrete Inputs,10014,,0,
+Discrete Inputs,10015,,0,
+Discrete Inputs,10016,,0,
+Discrete Inputs,10017,,0,
+Discrete Inputs,10018,D/G#1 Light fault of oil mist detector,0,
+Discrete Inputs,10019,D/G#1 Light fault of oil mist detector system failure,0,
+Discrete Inputs,10020,D/G#1 LO press.switch for engine(1st),0,
+Discrete Inputs,10021,D/G#1 LO press.switch for priming,1,
+Discrete Inputs,10022,D/G#1 Cooler water press switch,0,
+Discrete Inputs,10023,D/G#1 L.O. press switch for turbo-charger (1st),0,
+Discrete Inputs,10024,D/G#1 Jacket water thermal switch (1st),0,
+Discrete Inputs,10025,D/G#1 Cooler water thermal switch,0,
+Discrete Inputs,10026,D/G#1 L.O. thermal switch,0,
+Discrete Inputs,10027,D/G#1 L.O. sump tank level switch,1,
+Discrete Inputs,10028,D/G#1 Jacket water press switch (1st),0,
+Discrete Inputs,10029,D/G#1 L.O. filter differential press switch,0,
+Discrete Inputs,10030,,0,
+Discrete Inputs,10031,D/G#1 F.O leak tank level switch,0,
+Discrete Inputs,10032,D/G#1 Cooler water flow relay,0,
+Discrete Inputs,10033,D/G#1 Level switch for C.W. expansion tank,0,
+Discrete Inputs,10034,D/G#1 Level switch for C.W. expansion tank,0,
+Discrete Inputs,10035,D/G#1 Level switch for J.W. expansion tank,0,
+Discrete Inputs,10036,D/G#1 Level switch for J.W. expansion tank,0,
+Discrete Inputs,10037,D/G#1 Level switch for DO service tank level high,0,
+Discrete Inputs,10038,D/G#1 Level switch for DO service tank level low,0,
+Discrete Inputs,10039,D/G#1 F.O press.switch,0,
+Discrete Inputs,10040,,0,
+Discrete Inputs,10041,,0,
+Discrete Inputs,10042,,0,
+Discrete Inputs,10043,,0,
+Discrete Inputs,10044,,0,
+Discrete Inputs,10045,D/G#1 Over Speed (mechanical side),0,
+Discrete Inputs,10046,D/G#1 Thermal switch for alternator beaing(Fly-wheel side),0,
+Discrete Inputs,10047,D/G#1 Thermal switch for alternator beaing (Anti-Fly-wheel side),0,
+Discrete Inputs,10048,D/G#1 RATED SPEED,0,
+Discrete Inputs,10049,D/G#1 LOW SPEED,0,
+Discrete Inputs,10050,D/G#1 STARTING SOLENOID VALVE,0,
+Discrete Inputs,10051,D/G#1 FUEL SHUT DOWN DEVICE,0,
+Discrete Inputs,10052,D/G#1 FUEL CONTROL PISTON MAGNETIC VALVE,0,
+Discrete Inputs,10053,D/G#1 FUEL OIL CUT PISTON MAGNETIC VALVE,0,
+Discrete Inputs,10054,D/G#1 GOVERNOR HANDLE SWITCH,0,
+Discrete Inputs,10055,D/G#1 TURNING HANDLE POSITION SWITCH(ON AT TURNING DEVICE OUT),0,
+Discrete Inputs,10056,D/G#1 TURBO-CHARGER GAS OUTLET TEMP. SWITCH (1st),0,
+Discrete Inputs,10057,D/G#1 Limit switch for change over valve,0,
+Discrete Inputs,10058,D/G#1 Limit switch for change over valve,0,
+Discrete Inputs,10059,D/G#1 Limit switch for change over valve,0,
+Discrete Inputs,10060,D/G#1 Limit switch for change over valve,0,
+Discrete Inputs,10061,,0,
+Discrete Inputs,10062,,0,
+Discrete Inputs,10063,,0,
+Discrete Inputs,10064,,0,
+Discrete Inputs,10065,D/G#1 VCB Status: Close,0,
+Discrete Inputs,10066,D/G#1 VCB Status: Open,0,
+Discrete Inputs,10067,D/G#1 VCB Status: Fault (Non-close)/trip,0,
+Discrete Inputs,10068,,0,
+Discrete Inputs,10069,No.1 Turning Motor - Abnormal trip,0,
+Discrete Inputs,10070,No.1 Turning Motor - FWD Running,0,
+Discrete Inputs,10071,No.1 Turning Motor - Rev Running,0,
+Discrete Inputs,10072,No.1 Turning Motor -Remote mode,0,
+Discrete Inputs,10073,No.1 LO Priming Pump - Auto start,0,
+Discrete Inputs,10074,No.1 LO Priming Pump - Auto stop,0,
+Discrete Inputs,10075,No.1 LO Priming Pump - Abnormal trip,0,
+Discrete Inputs,10076,No.1 LO Priming Pump - Running,0,
+Discrete Inputs,10077,No.1 LO Priming Pump - Auto mode,0,
+Discrete Inputs,10078,,0,
+Discrete Inputs,10079,,0,
+Discrete Inputs,10080,No.1 Mist Fan - Auto start,0,
+Discrete Inputs,10081,No.1 Mist Fan - Auto stop,0,
+Discrete Inputs,10082,No.1 Mist Fan - Abnormal trip,0,
+Discrete Inputs,10083,No.1 Mist Fan - Running,0,
+Discrete Inputs,10084,No.1 Mist Fan - Auto mode,0,
+Discrete Inputs,10085,No.1 DO/HO inlet change valve - Energize,0,
+Discrete Inputs,10086,,0,
+Discrete Inputs,10087,No.1 DO/HO out change valve - Energize,0,
+Discrete Inputs,10088,,0,
+Discrete Inputs,10089,No.1 Alternator Space heater - Auto start,0,
+Discrete Inputs,10090,No.1 Alternator Space heater - Auto stop,0,
+Discrete Inputs,10091,No.1 Alternator Space heater - Abnormal trip,0,
+Discrete Inputs,10092,No.1 Alternator Space heater - Running,0,
+Discrete Inputs,10093,No.1 Alternator Space heater - Auto mode,0,
+Discrete Inputs,10094,No.1 HT Radiator Fan Motor - Auto start,0,
+Discrete Inputs,10095,No.1 HT Radiator Fan Motor - Auto stop,0,
+Discrete Inputs,10096,No.1 HT Radiator Fan Motor - Abnormal trip,0,
+Discrete Inputs,10097,No.1 HT Radiator Fan Motor - Running,0,
+Discrete Inputs,10098,No.1 HT Radiator Fan Motor - Auto mode,0,
+Discrete Inputs,10099,No.1 LT Radiator Fan Motor - Auto start,0,
+Discrete Inputs,10100,No.1 LT Radiator Fan Motor - Auto stop,0,
+Holding Registers,40001,D/G#1 T/C Outlet Temp,41,10;60
+Holding Registers,40002,D/G#1 Oil Mist Level,0,0;100
+Holding Registers,40003,D/G#1 Stator Winding Temp U,57,45;95
+Holding Registers,40004,D/G#1 Stator Winding Temp V,50,45;95
+Holding Registers,40005,D/G#1 Stator Winding Temp W,45,45;95
+Holding Registers,40006,D/G#1 Bearing Temp (Fly-wheel side),0,35;85
+Holding Registers,40007,D/G#1 Bearing Temp (Anit-Fly-wheel side),0,35;85
+Holding Registers,40008,D/G#1 Cyl 1 Exhaust Temp,0,300;500
+Holding Registers,40009,D/G#1 Cyl 2 Exhaust Temp,0,300;500
+Holding Registers,40010,D/G#1 Cyl 3 Exhaust Temp,0,300;500
+Holding Registers,40011,D/G#1 Cyl 4 Exhaust Temp,0,300;500
+Holding Registers,40012,D/G#1 Cyl 5 Exhaust Temp,0,300;500
+Holding Registers,40013,D/G#1 Cyl 6 Exhaust Temp,0,300;500
+Holding Registers,40014,D/G#1 T/C Inlet Temp,0,350;550
+Holding Registers,40015,D/G#1 Fuel Oil Pressure,0,30;80
+Holding Registers,40016,D/G#1 Jacket Water Pressure,0,10;40
+Holding Registers,40017,D/G#1 Cooler Water Pressure,0,10;40
+Holding Registers,40018,D/G#1 Engine LO Pressure,0,25;60
+Holding Registers,40019,D/G#1 Turbo LO Pressure,0,10;40
+Holding Registers,40020,D/G#1 Intake Air Pressure,0,5;30
+Holding Registers,40021,D/G#1 Jacket Water Inlet Temp,0,60;80
+Holding Registers,40022,D/G#1 Jacket Water Outlet Temp,0,70;95
+Holding Registers,40023,D/G#1 Cooler Water Inlet Temp,0,20;40
+Holding Registers,40024,D/G#1 Cooler Water Outlet Temp,0,30;55
+Holding Registers,40025,D/G#1 LO Cooler Inlet Temp,0,55;85
+Holding Registers,40026,D/G#1 LO Cooler Outlet Temp,0,40;70
+Holding Registers,40027,D/G#1 TEMP. SENSOR FOR COOLER WATER BEFORE L.O. COOLER,0,25;50
+Holding Registers,40028,D/G#1 DO Engine Inlet Temp,0,20;50
+Holding Registers,40029,D/G#1 DO Engine Return Temp,0,30;60
+Holding Registers,40030,D/G#1 HO Engine Inlet Temp,0,80;120
+Holding Registers,40031,D/G#1 HO Engine Return Temp,0,80;130
+Holding Registers,40032,,0,
+Holding Registers,40033,D/G#1 Generator Voltage,380,370;440
+Holding Registers,40034,D/G#1 Generator Frequency,600,590;610
+Holding Registers,40035,,0,
+Holding Registers,40036,D/G#1 Generator Current,0,200;1800
+Holding Registers,40037,,0,
+Holding Registers,40038,D/G#1 Engine Power,700,400;900
+Holding Registers,40039,D/G#1 Engine Speed,899,880;920
+Holding Registers,40040,,0,
+Holding Registers,40041,,0,
+Holding Registers,40042,,0,
+Holding Registers,40043,,0,
+Holding Registers,40044,,0,
+Holding Registers,40045,,0,
+Holding Registers,40046,,0,
+Holding Registers,40047,,0,
+Holding Registers,40048,,0,
+Holding Registers,40049,,0,
+Holding Registers,40050,,0,
+Holding Registers,40051,D/G#1 DO Transfer Flow (H),0,0;65535
+Holding Registers,40052,D/G#1 DO Transfer Flow (L),0,0;65535
+Holding Registers,40053,D/G#1 DO Engine Inlet Flow (H),0,0;65535
+Holding Registers,40054,D/G#1 DO Engine Inlet Flow (L),0,0;65535
+Holding Registers,40055,D/G#1 DO Engine Return Flow (H),0,0;65535
+Holding Registers,40056,D/G#1 DO Engine Return Flow (L),0,0;65535
+Holding Registers,40057,D/G#1 HO Transfer Flow (H),0,0;65535
+Holding Registers,40058,D/G#1 HO Transfer Flow (L),0,0;65535
+Holding Registers,40059,D/G#1 HO Engine Inlet Flow (H),0,0;65535
+Holding Registers,40060,D/G#1 HO Engine Inlet Flow (L),0,0;65535
+Holding Registers,40061,D/G#1 HO Engine Return Flow,0,0;65535
+Holding Registers,40062,D/G#1 HO Engine Return Flow (L),0,0;65535
+Holding Registers,40063,D/G#1 Engine Running hours (H),0,0;65535
+Holding Registers,40064,D/G#1 Engine Running hours (L),0,0;65535
+Holding Registers,40065,,0,
+Holding Registers,40066,,0,
+Holding Registers,40067,,0,
+Holding Registers,40068,,0,
+Holding Registers,40069,,0,
+Holding Registers,40070,,0,
+Holding Registers,40071,,0,
+Holding Registers,40072,,0,
+Holding Registers,40073,,0,
+Holding Registers,40074,,0,
+Holding Registers,40075,,0,
+Holding Registers,40076,,0,
+Holding Registers,40077,,0,
+Holding Registers,40078,,0,
+Holding Registers,40079,,0,
+Holding Registers,40080,,0,
+Holding Registers,40081,,0,
+Holding Registers,40082,,0,
+Holding Registers,40083,,0,
+Holding Registers,40084,,0,
+Holding Registers,40085,,0,
+Holding Registers,40086,,0,
+Holding Registers,40087,,0,
+Holding Registers,40088,,0,
+Holding Registers,40089,,0,
+Holding Registers,40090,,0,
+Holding Registers,40091,,0,
+Holding Registers,40092,,0,
+Holding Registers,40093,,0,
+Holding Registers,40094,,0,
+Holding Registers,40095,,0,
+Holding Registers,40096,,0,
+Holding Registers,40097,,0,
+Holding Registers,40098,,0,
+Holding Registers,40099,,0,
+Holding Registers,40100,,0,

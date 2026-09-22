@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import logging
 import queue
+import sys
 import time
 import tkinter as tk
 from dataclasses import asdict
@@ -15,10 +16,17 @@ from serial.tools import list_ports
 
 from .config import AppConfig
 from .csv_import import format_reference_address, parse_csv, reference_to_offset
+from .random_values import format_register_range, parse_register_range, random_register_value
 from .server import DataModel, ModbusServerRunner
 
 
 CONFIG_PATH = Path.home() / ".modbus_slave_config.json"
+RANDOM_INTERVAL_MS = 5000
+
+
+def bundled_path(*parts: str) -> Path:
+    base_dir = getattr(sys, "_MEIPASS", Path(__file__).resolve().parent.parent)
+    return Path(base_dir, *parts)
 
 
 class QueueLogHandler(logging.Handler):
@@ -52,10 +60,12 @@ class ModbusSlaveApp(tk.Tk):
         self.model: DataModel | None = None
         self.event_queue: queue.Queue[tuple[str, str]] = queue.Queue()
         self.labels: dict[tuple[str, int], str] = {}
+        self.register_ranges: dict[tuple[str, int], tuple[int, int]] = {}
         self.saved_values: dict[tuple[str, int], int] = {}
         self._last_bit_toggle: tuple[int, str, float] | None = None
         self._config_widgets: list[tk.Widget] = []
         self._refresh_job: str | None = None
+        self._random_job: str | None = None
 
         self._create_vars()
         self._build_ui()
@@ -66,7 +76,7 @@ class ModbusSlaveApp(tk.Tk):
         self.after(250, self._refresh_table)
 
     def _set_app_icon(self) -> None:
-        logo_path = Path(__file__).resolve().parent.parent / "dq logo.jpeg"
+        logo_path = bundled_path("dq logo.jpeg")
         if not logo_path.exists():
             return
         try:
@@ -104,6 +114,7 @@ class ModbusSlaveApp(tk.Tk):
         self.view_starts = [tk.StringVar(value="0"), tk.StringVar(value="0")]
         self.view_counts = [tk.StringVar(value="100"), tk.StringVar(value="100")]
         self.filters = [tk.StringVar(value=""), tk.StringVar(value="")]
+        self.random_enabled = tk.BooleanVar(value=False)
         self.status = tk.StringVar(value="Stopped")
 
     def _build_ui(self) -> None:
@@ -188,8 +199,10 @@ class ModbusSlaveApp(tk.Tk):
         ).pack(side="left", fill="x", expand=True, padx=(2, 0))
 
         self.tables: list[ttk.Treeview] = []
+        self.random_checks: list[ttk.Checkbutton] = []
         self._build_data_panel(data_frame, 0, "Table 1 - Digital Inputs")
         self._build_data_panel(data_frame, 1, "Table 2 - Holding Registers")
+        self._update_random_controls()
 
         ttk.Label(right, text="Activity Log", padding=(0, 8, 0, 3)).grid(row=2, column=0, sticky="w")
         log_holder = ttk.Frame(right)
@@ -211,13 +224,22 @@ class ModbusSlaveApp(tk.Tk):
         type_row = ttk.Frame(panel)
         type_row.grid(row=0, column=0, sticky="ew", pady=(0, 4))
         ttk.Label(type_row, text="Data type:").pack(side="left")
-        ttk.Combobox(
+        type_combo = ttk.Combobox(
             type_row,
             textvariable=self.data_types[index],
             values=DataModel.TYPES,
             state="readonly",
             width=19,
-        ).pack(side="left", fill="x", expand=True, padx=(5, 0))
+        )
+        type_combo.pack(side="left", fill="x", expand=True, padx=(5, 0))
+        type_combo.bind("<<ComboboxSelected>>", lambda _event: self._data_type_changed())
+        random_check = ttk.Checkbutton(
+            type_row,
+            text="Random value",
+            variable=self.random_enabled,
+            command=self._toggle_automatic_random,
+        )
+        self.random_checks.append(random_check)
 
         range_row = ttk.Frame(panel)
         range_row.grid(row=1, column=0, sticky="ew", pady=(0, 5))
@@ -241,16 +263,18 @@ class ModbusSlaveApp(tk.Tk):
         table_holder.columnconfigure(0, weight=1)
         table = ttk.Treeview(
             table_holder,
-            columns=("address", "label", "value"),
+            columns=("address", "label", "value", "range"),
             show="headings",
             selectmode="browse",
         )
         table.heading("address", text="Address")
         table.heading("label", text="Label")
         table.heading("value", text="Value")
+        table.heading("range", text="Range")
         table.column("address", width=75, minwidth=60, anchor="center")
-        table.column("label", width=150, minwidth=90, anchor="w")
-        table.column("value", width=90, minwidth=70, anchor="center")
+        table.column("label", width=135, minwidth=90, anchor="w")
+        table.column("value", width=70, minwidth=60, anchor="center")
+        table.column("range", width=90, minwidth=75, anchor="center")
         table.tag_configure("bit_off", foreground="#808080")
         table.tag_configure("bit_on", foreground="#16a34a")
         scrollbar = ttk.Scrollbar(table_holder, orient="vertical", command=table.yview)
@@ -380,6 +404,12 @@ class ModbusSlaveApp(tk.Tk):
 
     def _refresh_data_panel(self, index: int) -> None:
         table = self.tables[index]
+        data_type = self.data_types[index].get()
+        table.configure(
+            displaycolumns=("address", "label", "value", "range")
+            if data_type == "Holding Registers"
+            else ("address", "label", "value")
+        )
         selected = table.selection()
         selected_address = table.item(selected[0], "values")[0] if selected else None
         if not self.model:
@@ -388,7 +418,6 @@ class ModbusSlaveApp(tk.Tk):
         try:
             start = int(self.view_starts[index].get())
             count = int(self.view_counts[index].get())
-            data_type = self.data_types[index].get()
             values = self.model.get(data_type, start, count)
             is_bits = data_type in {"Coils", "Discrete Inputs"}
         except (ValueError, TypeError):
@@ -397,7 +426,7 @@ class ModbusSlaveApp(tk.Tk):
 
         filter_text = self.filters[index].get().strip().lower()
         if filter_text:
-            row_data: list[tuple[str, str, str | int, tuple[str, ...]]] = []
+            row_data: list[tuple[str, str, str | int, str, tuple[str, ...]]] = []
             for offset, value in enumerate(values):
                 address = start + offset
                 display = int(bool(value)) if is_bits else int(value)
@@ -407,18 +436,19 @@ class ModbusSlaveApp(tk.Tk):
                 if filter_text not in reference.lower() and filter_text not in label.lower():
                     continue
                 tags = (("bit_on" if display else "bit_off"),) if is_bits else ()
-                row_data.append((reference, label, shown_value, tags))
+                shown_range = format_register_range(self.register_ranges.get((data_type, address))) if data_type == "Holding Registers" else ""
+                row_data.append((reference, label, shown_value, shown_range, tags))
 
             rows = table.get_children()
             if len(rows) != len(row_data):
                 table.delete(*rows)
                 rows = tuple(
-                    table.insert("", "end", values=(reference, label, shown_value))
-                    for reference, label, shown_value, _tags in row_data
+                    table.insert("", "end", values=(reference, label, shown_value, shown_range))
+                    for reference, label, shown_value, shown_range, _tags in row_data
                 )
 
-            for item, (reference, label, shown_value, tags) in zip(rows, row_data):
-                new_values = (reference, label, shown_value)
+            for item, (reference, label, shown_value, shown_range, tags) in zip(rows, row_data):
+                new_values = (reference, label, shown_value, shown_range)
                 if tuple(str(part) for part in table.item(item, "values")) != tuple(str(part) for part in new_values):
                     table.item(item, values=new_values)
                 table.item(item, tags=tags)
@@ -441,7 +471,7 @@ class ModbusSlaveApp(tk.Tk):
                 table.insert(
                     "",
                     "end",
-                    values=(format_reference_address(data_type, start + offset), "", ""),
+                    values=(format_reference_address(data_type, start + offset), "", "", ""),
                 )
                 for offset in range(count)
             )
@@ -451,8 +481,9 @@ class ModbusSlaveApp(tk.Tk):
             display = int(bool(value)) if is_bits else int(value)
             label = self.labels.get((data_type, address), "")
             shown_value: str | int = "⬤" if is_bits else display
+            shown_range = format_register_range(self.register_ranges.get((data_type, address))) if data_type == "Holding Registers" else ""
             reference = format_reference_address(data_type, address)
-            new_values = (reference, label, shown_value)
+            new_values = (reference, label, shown_value, shown_range)
             if tuple(str(part) for part in table.item(item, "values")) != tuple(str(part) for part in new_values):
                 table.item(item, values=new_values)
             table.item(item, tags=(("bit_on" if display else "bit_off"),) if is_bits else ())
@@ -462,6 +493,56 @@ class ModbusSlaveApp(tk.Tk):
     def _clear_filter(self, index: int) -> None:
         self.filters[index].set("")
         self._refresh_table()
+
+    def _data_type_changed(self) -> None:
+        self._update_random_controls()
+        self._refresh_table()
+
+    def _update_random_controls(self) -> None:
+        for index, checkbutton in enumerate(self.random_checks):
+            if self.data_types[index].get() == "Holding Registers":
+                if not checkbutton.winfo_manager():
+                    checkbutton.pack(side="left", padx=(5, 0))
+            elif checkbutton.winfo_manager():
+                checkbutton.pack_forget()
+
+    def _toggle_automatic_random(self) -> None:
+        if self.random_enabled.get() and not self.register_ranges:
+            self.random_enabled.set(False)
+            messagebox.showwarning(
+                "Range not configured",
+                "Configure at least one Holding Register Range before enabling Random value.",
+                parent=self,
+            )
+            return
+        state = "enabled" if self.random_enabled.get() else "disabled"
+        self._append_log(f"Automatic Holding Register random values {state}")
+        self._cancel_random_job()
+        if self.random_enabled.get():
+            self._run_random_cycle()
+
+    def _run_random_cycle(self) -> None:
+        self._random_job = None
+        if not self.random_enabled.get() or not self.model:
+            return
+        for (data_type, address), value_range in tuple(self.register_ranges.items()):
+            if data_type != "Holding Registers" or address >= self.model.size:
+                continue
+            value = random_register_value(value_range)
+            self.model.set(data_type, address, [value])
+            self.saved_values[(data_type, address)] = value
+        for index in range(len(self.tables)):
+            self._refresh_data_panel(index)
+        self._random_job = self.after(RANDOM_INTERVAL_MS, self._run_random_cycle)
+
+    def _cancel_random_job(self) -> None:
+        if self._random_job is None:
+            return
+        try:
+            self.after_cancel(self._random_job)
+        except tk.TclError:
+            pass
+        self._random_job = None
 
     def _handle_table_click(self, event: tk.Event[Any], index: int) -> str | None:
         if not self.model or self.data_types[index].get() not in {"Coils", "Discrete Inputs"}:
@@ -495,9 +576,9 @@ class ModbusSlaveApp(tk.Tk):
         data_type = self.data_types[index].get()
         item = table.identify_row(event.y)
         column = table.identify_column(event.x)
-        if not item or column not in {"#2", "#3"}:
+        if not item or column not in {"#2", "#3", "#4"}:
             return
-        reference, label, current = table.item(item, "values")
+        reference, label, current, current_range = table.item(item, "values")
         address = reference_to_offset(data_type, reference)
         if column == "#2":
             new_label = simpledialog.askstring(
@@ -510,6 +591,29 @@ class ModbusSlaveApp(tk.Tk):
                 self.labels[(data_type, address)] = new_label.strip()
                 self._append_log(f"Set label {data_type}[{reference}] = {new_label.strip()}")
                 self._refresh_table()
+            return
+        if column == "#4":
+            if data_type != "Holding Registers":
+                return
+            value = simpledialog.askstring(
+                "Edit random range",
+                f"Range for Holding Registers[{reference}]\nEnter min;max (example: 10;100):",
+                initialvalue=str(current_range),
+                parent=self,
+            )
+            if value is None:
+                return
+            try:
+                key = (data_type, address)
+                if not value.strip():
+                    self.register_ranges.pop(key, None)
+                    self._append_log(f"Cleared random range for {data_type}[{reference}]")
+                else:
+                    self.register_ranges[key] = parse_register_range(value)
+                    self._append_log(f"Set random range {data_type}[{reference}] = {format_register_range(self.register_ranges[key])}")
+                self._refresh_data_panel(index)
+            except ValueError as exc:
+                messagebox.showerror("Invalid range", str(exc), parent=self)
             return
         is_bits = data_type in {"Coils", "Discrete Inputs"}
         if is_bits:
@@ -568,6 +672,11 @@ class ModbusSlaveApp(tk.Tk):
                 self.model.set(record.data_type, record.address, [record.value])
                 self.saved_values[(record.data_type, record.address)] = record.value
                 self.labels[(record.data_type, record.address)] = record.label
+                range_key = (record.data_type, record.address)
+                if record.value_range is None:
+                    self.register_ranges.pop(range_key, None)
+                else:
+                    self.register_ranges[range_key] = record.value_range
         except (OSError, UnicodeError, ValueError) as exc:
             messagebox.showerror("Unable to import CSV", str(exc), parent=self)
             return
@@ -607,13 +716,21 @@ class ModbusSlaveApp(tk.Tk):
         try:
             with Path(path).open("w", encoding="utf-8-sig", newline="") as stream:
                 writer = csv.writer(stream)
-                writer.writerow(("data_type", "address", "label", "value"))
+                writer.writerow(("data_type", "address", "label", "value", "range"))
                 for data_type, start, values in table_rows:
                     for offset, value in enumerate(values):
                         address = start + offset
                         display = int(bool(value)) if data_type in {"Coils", "Discrete Inputs"} else int(value)
                         reference = format_reference_address(data_type, address)
-                        writer.writerow((data_type, reference, self.labels.get((data_type, address), ""), display))
+                        writer.writerow(
+                            (
+                                data_type,
+                                reference,
+                                self.labels.get((data_type, address), ""),
+                                display,
+                                format_register_range(self.register_ranges.get((data_type, address))),
+                            )
+                        )
         except (OSError, UnicodeError, csv.Error) as exc:
             messagebox.showerror("Unable to export CSV", str(exc), parent=self)
             return
@@ -665,6 +782,7 @@ class ModbusSlaveApp(tk.Tk):
                 messagebox.showerror("Unable to export settings", str(exc), parent=self)
 
     def _on_close(self) -> None:
+        self._cancel_random_job()
         try:
             self._read_config().save(CONFIG_PATH)
         except (ValueError, OSError):

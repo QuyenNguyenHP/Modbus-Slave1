@@ -1633,7 +1633,7 @@ Discrete Inputs,11631,(Thermostat switch for Drain Tank Heater),0
 Discrete Inputs,11632,,0
 Discrete Inputs,11633,,0
 Discrete Inputs,11634,,0
-Discrete Inputs,11635,,0
+Discrete Inputs,11635,Level Switch for Sludge Tank,0
 Discrete Inputs,11636,No.1 Air Compressor - Auto start,0
 Discrete Inputs,11637,No.1 Air Compressor - Auto Stop,0
 Discrete Inputs,11638,No.1 Air Compressor - Abnormal trip,0

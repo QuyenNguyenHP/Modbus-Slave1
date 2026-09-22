@@ -10,6 +10,7 @@ from pymodbus.client import ModbusTcpClient
 
 from modbus_app.config import AppConfig
 from modbus_app.csv_import import format_reference_address, parse_csv, reference_to_offset
+from modbus_app.random_values import format_register_range, parse_register_range, random_register_value
 from modbus_app.server import DataModel, ModbusServerRunner
 
 
@@ -97,6 +98,50 @@ class CsvImportTests(unittest.TestCase):
 
         self.assertEqual(skipped, 0)
         self.assertEqual([record.address for record in records], [0, 1])
+
+    def test_holding_register_range_is_imported(self) -> None:
+        stream = StringIO(
+            "data_type,address,label,value,range\n"
+            'Holding Registers,40001,Temperature,12,"10;100"\n'
+        )
+
+        records, skipped = parse_csv(stream, "Holding Registers")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual(records[0].value_range, (10, 100))
+
+    def test_range_in_semicolon_csv_is_imported(self) -> None:
+        stream = StringIO(
+            "data_type;address;label;value;range\n"
+            'Holding Registers;40001;Temperature;12;"10;100"\n'
+        )
+
+        records, skipped = parse_csv(stream, "Holding Registers")
+
+        self.assertEqual(skipped, 0)
+        self.assertEqual(records[0].value_range, (10, 100))
+
+
+class RandomValueTests(unittest.TestCase):
+    def test_parse_and_format_register_range(self) -> None:
+        self.assertEqual(parse_register_range(" 10 ; 100 "), (10, 100))
+        self.assertEqual(parse_register_range("08;09"), (8, 9))
+        self.assertEqual(format_register_range((10, 100)), "10;100")
+
+    def test_invalid_register_ranges_are_rejected(self) -> None:
+        for value in ("10", "10;", "20;10", "-1;10", "0;65536", "a;b"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                parse_register_range(value)
+
+    def test_random_value_uses_inclusive_range(self) -> None:
+        calls: list[tuple[int, int]] = []
+
+        def fake_randint(minimum: int, maximum: int) -> int:
+            calls.append((minimum, maximum))
+            return maximum
+
+        self.assertEqual(random_register_value((5, 9), fake_randint), 9)
+        self.assertEqual(calls, [(5, 9)])
 
 
 class TcpServerTests(unittest.TestCase):

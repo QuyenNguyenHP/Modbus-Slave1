@@ -9,6 +9,7 @@ A configurable desktop Modbus Slave/Server simulator supporting **Modbus TCP** a
 - Display two data tables simultaneously, defaulting to Discrete Inputs and Holding Registers.
 - Select Coils, Discrete Inputs, Holding Registers, or Input Registers independently for each table.
 - Display Address, Label, and Value; double-click a label or value to edit it.
+- Configure Holding Register ranges as `min;max`, then tick **Random value** to update all configured registers automatically every 5 seconds.
 - Show Coils and Discrete Inputs as status dots; click a dot to toggle gray (`0`) and green (`1`).
 - Use `dq logo.jpeg` as the application window and taskbar icon.
 - Import and export both visible tables together in one CSV file.
@@ -33,6 +34,26 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
+## Build EXE for another laptop
+
+To create a standalone Windows executable:
+
+```powershell
+.\build_exe.bat
+```
+
+The generated file will be:
+
+```text
+dist\ModbusSlaveSimulator.exe
+```
+
+Notes:
+
+- The target laptop normally does **not** need Python installed.
+- If Windows SmartScreen warns on first launch, choose **More info** -> **Run anyway**.
+- Modbus TCP on port `5020` usually works without Administrator rights. Port `502` may require elevation or a firewall rule.
+
 ## Usage
 
 1. Select `TCP` or `RTU` and enter the connection settings.
@@ -48,17 +69,19 @@ load or save both visible tables in one operation. Exported files use UTF-8 and
 this structure:
 
 ```csv
-data_type,address,label,value
-Discrete Inputs,10001,Run feedback,1
-Discrete Inputs,10002,Alarm,0
-Holding Registers,40001,Speed setpoint,1500
+data_type,address,label,value,range
+Discrete Inputs,10001,Run feedback,1,
+Discrete Inputs,10002,Alarm,0,
+Holding Registers,40001,Speed setpoint,1500,1000;1800
 ```
 
 The `address` and `value` columns are required when importing. Keep the
 `data_type` column when a file contains data for both tables so each row is sent
 to the correct Modbus data block. For compatibility with older files, if
 `data_type` is omitted, rows are imported into the data type selected in Table 1.
-The `label` column is optional.
+The `label` and `range` columns are optional. `range` applies to Holding Registers
+and contains an inclusive minimum and maximum separated by `;`, for example
+`1000;1800`.
 
 Imports accept comma-, semicolon-, or tab-separated files. Legacy Modbus references are converted automatically: `10001` for Discrete Inputs, `30001` for Input Registers, and `40001` for Holding Registers all map to zero-based address `0`. When the server is stopped, importing a larger address range automatically increases **Data size**.
 

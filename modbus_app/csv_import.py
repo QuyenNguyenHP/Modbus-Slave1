@@ -4,6 +4,8 @@ import csv
 from dataclasses import dataclass
 from typing import TextIO
 
+from .random_values import parse_register_range
+
 
 REFERENCE_BASES = {
     "Coils": 1,
@@ -24,6 +26,7 @@ class CsvRecord:
     address: int
     label: str
     value: int
+    value_range: tuple[int, int] | None = None
 
 
 def normalize_address(data_type: str, address: int) -> int:
@@ -123,12 +126,19 @@ def parse_csv(stream: TextIO, current_type: str) -> tuple[list[CsvRecord], int]:
                     raise ValueError("Bit values must be 0 or 1")
             elif not 0 <= value <= 65535:
                 raise ValueError("Register values must be between 0 and 65535")
+            range_text = normalized.get("range", "").strip()
+            value_range = None
+            if range_text:
+                if data_type != "Holding Registers":
+                    raise ValueError("Ranges are only supported for Holding Registers")
+                value_range = parse_register_range(range_text)
             records.append(
                 CsvRecord(
                     data_type=data_type,
                     address=address,
                     label=normalized.get("label", "").strip(),
                     value=value,
+                    value_range=value_range,
                 )
             )
         except (KeyError, TypeError, ValueError):
