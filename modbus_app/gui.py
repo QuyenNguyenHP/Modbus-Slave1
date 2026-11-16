@@ -114,7 +114,10 @@ class ModbusSlaveApp(tk.Tk):
         self.view_starts = [tk.StringVar(value="0"), tk.StringVar(value="0")]
         self.view_counts = [tk.StringVar(value="100"), tk.StringVar(value="100")]
         self.filters = [tk.StringVar(value=""), tk.StringVar(value="")]
-        self.random_enabled = tk.BooleanVar(value=False)
+        self.random_enabled = {
+            data_type: tk.BooleanVar(value=False)
+            for data_type in ("Holding Registers", "Input Registers", "Discrete Inputs")
+        }
         self.status = tk.StringVar(value="Stopped")
 
     def _build_ui(self) -> None:
@@ -236,8 +239,8 @@ class ModbusSlaveApp(tk.Tk):
         random_check = ttk.Checkbutton(
             type_row,
             text="Random value",
-            variable=self.random_enabled,
-            command=self._toggle_automatic_random,
+            variable=self.random_enabled.get(self.data_types[index].get()),
+            command=lambda: self._toggle_automatic_random(index),
         )
         self.random_checks.append(random_check)
 
@@ -407,7 +410,7 @@ class ModbusSlaveApp(tk.Tk):
         data_type = self.data_types[index].get()
         table.configure(
             displaycolumns=("address", "label", "value", "range")
-            if data_type == "Holding Registers"
+            if data_type in {"Holding Registers", "Input Registers"}
             else ("address", "label", "value")
         )
         selected = table.selection()
@@ -436,7 +439,7 @@ class ModbusSlaveApp(tk.Tk):
                 if filter_text not in reference.lower() and filter_text not in label.lower():
                     continue
                 tags = (("bit_on" if display else "bit_off"),) if is_bits else ()
-                shown_range = format_register_range(self.register_ranges.get((data_type, address))) if data_type == "Holding Registers" else ""
+                shown_range = format_register_range(self.register_ranges.get((data_type, address))) if data_type in {"Holding Registers", "Input Registers"} else ""
                 row_data.append((reference, label, shown_value, shown_range, tags))
 
             rows = table.get_children()
@@ -481,7 +484,7 @@ class ModbusSlaveApp(tk.Tk):
             display = int(bool(value)) if is_bits else int(value)
             label = self.labels.get((data_type, address), "")
             shown_value: str | int = "⬤" if is_bits else display
-            shown_range = format_register_range(self.register_ranges.get((data_type, address))) if data_type == "Holding Registers" else ""
+            shown_range = format_register_range(self.register_ranges.get((data_type, address))) if data_type in {"Holding Registers", "Input Registers"} else ""
             reference = format_reference_address(data_type, address)
             new_values = (reference, label, shown_value, shown_range)
             if tuple(str(part) for part in table.item(item, "values")) != tuple(str(part) for part in new_values):
@@ -500,39 +503,53 @@ class ModbusSlaveApp(tk.Tk):
 
     def _update_random_controls(self) -> None:
         for index, checkbutton in enumerate(self.random_checks):
-            if self.data_types[index].get() == "Holding Registers":
+            data_type = self.data_types[index].get()
+            if data_type in self.random_enabled:
+                checkbutton.configure(variable=self.random_enabled[data_type])
                 if not checkbutton.winfo_manager():
                     checkbutton.pack(side="left", padx=(5, 0))
             elif checkbutton.winfo_manager():
                 checkbutton.pack_forget()
 
-    def _toggle_automatic_random(self) -> None:
-        if self.random_enabled.get() and not self.register_ranges:
-            self.random_enabled.set(False)
+    def _toggle_automatic_random(self, index: int) -> None:
+        data_type = self.data_types[index].get()
+        enabled = self.random_enabled[data_type]
+        if enabled.get() and data_type != "Discrete Inputs" and not any(
+            key[0] == data_type for key in self.register_ranges
+        ):
+            enabled.set(False)
             messagebox.showwarning(
                 "Range not configured",
-                "Configure at least one Holding Register Range before enabling Random value.",
+                f"Configure at least one {data_type} Range before enabling Random value.",
                 parent=self,
             )
             return
-        state = "enabled" if self.random_enabled.get() else "disabled"
-        self._append_log(f"Automatic Holding Register random values {state}")
+        state = "enabled" if enabled.get() else "disabled"
+        self._append_log(f"Automatic {data_type} random values {state}")
         self._cancel_random_job()
-        if self.random_enabled.get():
+        if any(variable.get() for variable in self.random_enabled.values()):
             self._run_random_cycle()
 
     def _run_random_cycle(self) -> None:
         self._random_job = None
-        if not self.random_enabled.get() or not self.model:
+        if not any(variable.get() for variable in self.random_enabled.values()):
             return
-        for (data_type, address), value_range in tuple(self.register_ranges.items()):
-            if data_type != "Holding Registers" or address >= self.model.size:
-                continue
-            value = random_register_value(value_range)
-            self.model.set(data_type, address, [value])
-            self.saved_values[(data_type, address)] = value
-        for index in range(len(self.tables)):
-            self._refresh_data_panel(index)
+        if self.model:
+            for (data_type, address), value_range in tuple(self.register_ranges.items()):
+                if data_type not in {"Holding Registers", "Input Registers"}:
+                    continue
+                if not self.random_enabled[data_type].get() or not 0 <= address < self.model.size:
+                    continue
+                value = random_register_value(value_range)
+                self.model.set(data_type, address, [value])
+                self.saved_values[(data_type, address)] = value
+            if self.random_enabled["Discrete Inputs"].get():
+                values = [random_register_value((0, 1)) for _ in range(self.model.size)]
+                self.model.set("Discrete Inputs", 0, values)
+                for address, value in enumerate(values):
+                    self.saved_values[("Discrete Inputs", address)] = value
+            for index in range(len(self.tables)):
+                self._refresh_data_panel(index)
         self._random_job = self.after(RANDOM_INTERVAL_MS, self._run_random_cycle)
 
     def _cancel_random_job(self) -> None:
@@ -593,11 +610,11 @@ class ModbusSlaveApp(tk.Tk):
                 self._refresh_table()
             return
         if column == "#4":
-            if data_type != "Holding Registers":
+            if data_type not in {"Holding Registers", "Input Registers"}:
                 return
             value = simpledialog.askstring(
                 "Edit random range",
-                f"Range for Holding Registers[{reference}]\nEnter min;max (example: 10;100):",
+                f"Range for {data_type}[{reference}]\nEnter min;max (example: 10;100):",
                 initialvalue=str(current_range),
                 parent=self,
             )

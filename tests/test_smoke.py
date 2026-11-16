@@ -144,6 +144,49 @@ class RandomValueTests(unittest.TestCase):
         self.assertEqual(calls, [(5, 9)])
 
 
+class ExtendedRandomTests(unittest.TestCase):
+    def test_input_register_range_csv(self) -> None:
+        records, skipped = parse_csv(StringIO(
+            'data_type,address,value,range\nInput Registers,30001,12,10;100\n'
+        ), "Input Registers")
+        self.assertEqual(skipped, 0)
+        self.assertEqual(records[0].value_range, (10, 100))
+        self.assertEqual(records[0].address, 0)
+
+    def test_random_cycle_updates_inputs_and_respects_type_toggles(self) -> None:
+        from types import SimpleNamespace
+        from unittest.mock import Mock, patch
+        from modbus_app.gui import ModbusSlaveApp
+
+        model = DataModel(4)
+        model.set("Holding Registers", 0, [77])
+        app = SimpleNamespace(
+            model=model,
+            random_enabled={
+                name: Mock(get=Mock(return_value=enabled))
+                for name, enabled in (("Holding Registers", False),
+                                      ("Input Registers", True), ("Discrete Inputs", True))
+            },
+            register_ranges={("Holding Registers", 0): (1, 1),
+                             ("Input Registers", 0): (42, 42),
+                             ("Input Registers", 9): (99, 99)},
+            saved_values={}, tables=[], after=Mock(return_value="timer"),
+            _run_random_cycle=Mock(),
+        )
+        with patch("modbus_app.gui.random_register_value", side_effect=[42, 0, 1, 0, 1]):
+            ModbusSlaveApp._run_random_cycle(app)
+        self.assertEqual(model.get("Input Registers", 0), [42])
+        self.assertEqual(model.get("Discrete Inputs", 0, 4), [False, True, False, True])
+        self.assertEqual(model.get("Holding Registers", 0), [77])
+        self.assertEqual(app.saved_values[("Discrete Inputs", 3)], 1)
+        app.after.assert_called_once_with(5000, app._run_random_cycle)
+        for variable in app.random_enabled.values():
+            variable.get.return_value = False
+        app.after.reset_mock()
+        ModbusSlaveApp._run_random_cycle(app)
+        app.after.assert_not_called()
+
+
 class TcpServerTests(unittest.TestCase):
     def test_tcp_write_then_read(self) -> None:
         with socket.socket() as probe:

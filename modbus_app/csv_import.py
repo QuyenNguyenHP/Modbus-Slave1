@@ -129,8 +129,8 @@ def parse_csv(stream: TextIO, current_type: str) -> tuple[list[CsvRecord], int]:
             range_text = normalized.get("range", "").strip()
             value_range = None
             if range_text:
-                if data_type != "Holding Registers":
-                    raise ValueError("Ranges are only supported for Holding Registers")
+                if data_type not in {"Holding Registers", "Input Registers"}:
+                    raise ValueError("Ranges are only supported for Holding Registers and Input Registers")
                 value_range = parse_register_range(range_text)
             records.append(
                 CsvRecord(

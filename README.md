@@ -9,7 +9,8 @@ A configurable desktop Modbus Slave/Server simulator supporting **Modbus TCP** a
 - Display two data tables simultaneously, defaulting to Discrete Inputs and Holding Registers.
 - Select Coils, Discrete Inputs, Holding Registers, or Input Registers independently for each table.
 - Display Address, Label, and Value; double-click a label or value to edit it.
-- Configure Holding Register ranges as `min;max`, then tick **Random value** to update all configured registers automatically every 5 seconds.
+- Configure Holding Register and Input Register ranges as `min;max`, then tick **Random value** to update configured registers automatically every 5 seconds. Each data type has its own toggle.
+- Enable **Random value** for Discrete Inputs to generate 0/1 values for all addresses in Data size every 5 seconds, independently of the visible range or filter.
 - Show Coils and Discrete Inputs as status dots; click a dot to toggle gray (`0`) and green (`1`).
 - Use `dq logo.jpeg` as the application window and taskbar icon.
 - Import and export both visible tables together in one CSV file.
